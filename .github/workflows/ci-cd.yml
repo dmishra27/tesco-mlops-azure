@@ -41,13 +41,13 @@ jobs:
           cache: pip
 
       - name: Install dependencies
-        run: pip install -r ml/requirements.txt ruff pytest pytest-asyncio httpx
+        run: pip install -r ml/requirements.txt ruff pytest pytest-asyncio anyio httpx
 
       - name: Lint (ruff)
         run: ruff check ml/ producer/
 
       - name: Run tests
-        run: pytest tests/ -v --tb=short
+        run: pytest tests/unit/ -v --tb=short
         continue-on-error: false
 
   # ── Build & Push Docker Image ────────────────────────────────────────────────
