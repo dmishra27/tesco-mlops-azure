@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+.venv/
+venv/
+env/
+.env
+*.env
+
+# Jupyter
+.ipynb_checkpoints/
+
+# MLflow
+mlruns/
+mlartifacts/
+
+# Terraform
+.terraform/
+.terraform.lock.hcl
+*.tfplan
+*.tfstate
+*.tfstate.backup
+terraform.tfvars
+environments/*.tfvars
+
+# Secrets (never commit)
+*.pem
+*.key
+*.pfx
+secrets.json
+service_principal.json
+
+# Data
+data/
+*.parquet
+*.csv
+*.json.gz
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test artifacts
+.pytest_cache/
+.coverage
+htmlcov/

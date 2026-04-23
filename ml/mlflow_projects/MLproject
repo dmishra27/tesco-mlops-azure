@@ -1,0 +1,25 @@
+name: tesco-mlops-training
+
+conda_env: conda.yaml
+
+entry_points:
+  main:
+    parameters:
+      features_path:
+        type: str
+        default: "data/customer_features.parquet"
+      n_clusters:
+        type: int
+        default: 5
+      target_category:
+        type: str
+        default: "ready_meals"
+      experiment_name:
+        type: str
+        default: "/Shared/tesco-mlops/training"
+    command: >
+      python ../train.py
+        --features-path {features_path}
+        --n-clusters {n_clusters}
+        --target-category {target_category}
+        --experiment-name {experiment_name}

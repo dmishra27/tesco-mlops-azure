@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tesco-mlops-scoring
+  namespace: mlops
+  labels:
+    app: tesco-mlops-scoring
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+spec:
+  type: LoadBalancer
+  selector:
+    app: tesco-mlops-scoring
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: http
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mlops
+  labels:
+    name: mlops
