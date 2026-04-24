@@ -337,7 +337,7 @@ tesco-mlops-azure/
 ## Author
 
 **Debabrata Mishra** — Senior ML Engineer  
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-debabrata--mishra-0A66C2?style=flat-square&logo=linkedin)](https://www.linkedin.com/in/debabrata-mishra-b64976134/)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-debabrata--mishra-0A66C2?style=flat-square&logo=linkedin)](https://www.linkedin.com/in/debabrata-mishra/)
 
 **Publication:** *Neural Document Quality Estimation for Information Retrieval Re-ranking* — SIGIR 2024  
 DOI: [10.1145/3626772.3657765](https://doi.org/10.1145/3626772.3657765)
