@@ -59,3 +59,13 @@ output "storage_containers" {
     gold   = azurerm_storage_container.gold.name
   }
 }
+
+output "synapse_workspace_name" {
+  description = "Azure Synapse Analytics workspace name"
+  value       = azurerm_synapse_workspace.this.name
+}
+
+output "synapse_serverless_endpoint" {
+  description = "Synapse Serverless SQL endpoint (use for Power BI DirectQuery connection)"
+  value       = "${azurerm_synapse_workspace.this.name}-ondemand.sql.azuresynapse.net"
+}

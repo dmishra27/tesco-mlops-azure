@@ -188,3 +188,46 @@ resource "azurerm_key_vault_secret" "storage_account_name" {
   key_vault_id = azurerm_key_vault.this.id
   depends_on   = [azurerm_key_vault.this]
 }
+
+# ── Azure Synapse Analytics ───────────────────────────────────────────────────
+# Provides a serverless SQL query layer over the gold Delta containers,
+# consumed by Power BI DirectQuery dashboards.
+resource "azurerm_storage_container" "synapse" {
+  name                  = "synapse"
+  storage_account_name  = azurerm_storage_account.datalake.name
+  container_access_type = "private"
+}
+
+resource "azurerm_synapse_workspace" "this" {
+  name                                 = "${local.prefix}-synapse"
+  resource_group_name                  = azurerm_resource_group.this.name
+  location                             = azurerm_resource_group.this.location
+  storage_data_lake_gen2_filesystem_id = azurerm_storage_data_lake_gen2_filesystem.synapse.id
+  sql_administrator_login              = var.synapse_sql_admin_username
+  sql_administrator_login_password     = var.synapse_sql_admin_password
+
+  identity {
+    type = "SystemAssigned"
+  }
+
+  tags = var.tags
+}
+
+resource "azurerm_storage_data_lake_gen2_filesystem" "synapse" {
+  name               = "synapse"
+  storage_account_id = azurerm_storage_account.datalake.id
+}
+
+resource "azurerm_synapse_firewall_rule" "allow_azure_services" {
+  name                 = "AllowAzureServices"
+  synapse_workspace_id = azurerm_synapse_workspace.this.id
+  start_ip_address     = "0.0.0.0"
+  end_ip_address       = "0.0.0.0"
+}
+
+# Grant Synapse managed identity read access to the gold layer in ADLS
+resource "azurerm_role_assignment" "synapse_adls_reader" {
+  scope                = azurerm_storage_account.datalake.id
+  role_definition_name = "Storage Blob Data Reader"
+  principal_id         = azurerm_synapse_workspace.this.identity[0].principal_id
+}

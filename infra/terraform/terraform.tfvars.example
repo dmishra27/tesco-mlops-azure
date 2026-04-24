@@ -1,0 +1,41 @@
+# terraform.tfvars.example
+# Copy to terraform.tfvars and fill in your values before running terraform plan/apply.
+# NEVER commit terraform.tfvars — it is listed in .gitignore.
+
+# ── Required (no defaults) ────────────────────────────────────────────────────
+
+# Azure subscription ID — retrieve with: az account show --query id -o tsv
+subscription_id = "00000000-0000-0000-0000-000000000000"
+
+# Azure AD tenant ID — retrieve with: az account show --query tenantId -o tsv
+tenant_id = "00000000-0000-0000-0000-000000000000"
+
+# Object ID of the service principal or user running Terraform
+# For interactive login: az ad signed-in-user show --query id -o tsv
+# For a service principal: az ad sp show --id <appId> --query id -o tsv
+deployer_object_id = "00000000-0000-0000-0000-000000000000"
+
+# ── Optional (override defaults in variables.tf) ──────────────────────────────
+
+# location           = "uksouth"
+# environment        = "dev"   # dev | staging | prod
+# project            = "tesco-mlops"
+# databricks_sku     = "premium"
+
+# ACR name must be globally unique, alphanumeric, 5-50 chars
+# acr_name           = "tescomlopscr"
+
+# Event Hub
+# eventhub_partition_count          = 4
+# eventhub_message_retention_days   = 7
+
+# Synapse SQL admin (required for Synapse workspace)
+synapse_sql_admin_username = "sqladmin"
+synapse_sql_admin_password = "REPLACE_WITH_STRONG_PASSWORD_Min16Chars!"
+
+# Resource tags
+# tags = {
+#   project     = "tesco-mlops"
+#   managed_by  = "terraform"
+#   cost_centre = "ml-platform"
+# }

@@ -40,8 +40,8 @@ def compute_rfm(transactions: pd.DataFrame, snapshot_date: date) -> pd.DataFrame
 def compute_channel_mix(transactions: pd.DataFrame) -> pd.DataFrame:
     grp = transactions.groupby("customer_id")
     mix = pd.DataFrame({
-        "online_txns":  grp.apply(lambda x: (x["channel"] == "online").sum()),
-        "instore_txns": grp.apply(lambda x: (x["channel"] == "in-store").sum()),
+        "online_txns":  grp.apply(lambda x: (x["channel"] == "online").sum(), include_groups=False),
+        "instore_txns": grp.apply(lambda x: (x["channel"] == "in-store").sum(), include_groups=False),
     }).reset_index()
     mix["online_ratio"] = mix["online_txns"] / (
         mix["online_txns"] + mix["instore_txns"]

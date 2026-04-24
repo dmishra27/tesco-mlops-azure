@@ -64,6 +64,18 @@ variable "acr_name" {
   default     = "tescomlopscr"
 }
 
+variable "synapse_sql_admin_username" {
+  description = "SQL admin username for the Synapse workspace"
+  type        = string
+  default     = "sqladmin"
+}
+
+variable "synapse_sql_admin_password" {
+  description = "SQL admin password for the Synapse workspace (must meet Azure complexity requirements)"
+  type        = string
+  sensitive   = true
+}
+
 variable "tags" {
   description = "Common tags applied to all resources"
   type        = map(string)

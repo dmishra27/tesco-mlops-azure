@@ -82,8 +82,9 @@ flowchart LR
 | **Secrets** | Azure Key Vault (purge-protected) | Connection strings, storage account name, tokens — never in code |
 | **Infrastructure** | Terraform ≥ 1.5 (AzureRM + Databricks providers) | Fully reproducible IaC with remote state in Azure Blob |
 | **CI/CD** | GitHub Actions (4-job pipeline) | Lint → test → build → AKS deploy → Databricks training trigger |
+| **Analytics / BI** | Azure Synapse Analytics + Power BI | Gold layer SQL query layer; customer segment distribution and propensity score dashboards for merchandising and marketing teams |
 | **Monitoring** | Azure Application Insights | API latency, error rate, throughput; Databricks job alerts |
-| **Testing** | pytest + httpx AsyncClient | 25 unit tests: feature engineering invariants + FastAPI contract tests |
+| **Testing** | pytest + httpx AsyncClient | 28 unit tests: feature engineering invariants + FastAPI contract tests |
 
 ---
 
@@ -165,6 +166,10 @@ az storage account create -n tescomlopstfstate \
     -g tesco-mlops-tfstate-rg --sku Standard_LRS
 az storage container create -n tfstate \
     --account-name tescomlopstfstate
+
+# Copy and populate environment-specific values
+cp terraform.tfvars.example terraform.tfvars
+# Edit terraform.tfvars: fill in subscription_id, tenant_id, deployer_object_id
 
 # Deploy all resources (~8 min)
 terraform init
@@ -335,4 +340,4 @@ tesco-mlops-azure/
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-debabrata--mishra-0A66C2?style=flat-square&logo=linkedin)](https://www.linkedin.com/in/debabrata-mishra-b64976134/)
 
 **Publication:** *Neural Document Quality Estimation for Information Retrieval Re-ranking* — SIGIR 2024  
-DOI: [10.1145/3626772.3657967](https://doi.org/10.1145/3626772.3657967)
+DOI: [10.1145/3626772.3657765](https://doi.org/10.1145/3626772.3657765)

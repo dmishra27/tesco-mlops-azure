@@ -38,7 +38,7 @@ def _make_transactions(n: int = 200, seed: int = 42) -> pd.DataFrame:
             "quantity":       qty,
             "unit_price":     price,
             "total_amount":   round(qty * price, 2),
-            "timestamp":      today - timedelta(days=int(rng.integers(0, 90))),
+            "timestamp":      pd.Timestamp(today - timedelta(days=int(rng.integers(0, 90)))),
             "channel":        channels[i % len(channels)],
             "ingest_date":    today,
         })
