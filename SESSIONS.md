@@ -1,4 +1,4 @@
-Last updated: 24 April 2026
+Last updated: 24 April 2026 (Session 3)
 
 ## Session 1 — 23 April 2026 (completed)
 
@@ -99,10 +99,56 @@ Last updated: 24 April 2026
 
 ---
 
-## Session 3 — Future (stretch goals)
+## Session 3 — 24 April 2026 (completed)
 
-- [ ] monitoring/drift_detector.py — PSI drift detection
-- [ ] Add Airflow drift monitoring task to DAG
+### Propensity Model Pipeline
+
+- [x] Full model progression (7 models)
+- [x] Optuna hyperparameter tuning (XGBoost + LightGBM, 50 trials each)
+- [x] TimeSeriesSplit cross-validation (n_splits=5, gap=7) for all sklearn models
+- [x] Learning curves and bias-variance analysis (Logistic Regression)
+- [x] Overfitting curve scan depths 2-12 (Decision Tree)
+- [x] OOB score trajectory n_trees 10-500 (Random Forest)
+- [x] Feature importance stability across 5 seeds (Random Forest)
+- [x] Stacking ensemble with temporal forward-chaining CV (5 folds)
+- [x] Soft voting ensemble (weights proportional to val AUC)
+- [x] Model selection with 6 gate criteria
+- [x] Calibration check with isotonic fallback (max gap 0.361 reduced)
+- [x] SHAP business interpretability table (LightGBM + XGBoost)
+- [x] Persona recovery ground truth check: 3/3
+- [x] Results saved to data/results/scored_customers.csv
+- [x] docs/model_selection_results.md
+
+### Data pipeline
+
+- [x] ml/local/generate.py — 5,000 customers, 50,000 transactions, 3 personas
+- [x] ml/local/feature_engineering.py — RFM + behavioural features, temporal splits
+- [x] data/synthetic/transactions.csv + customers.csv
+- [x] data/features/customer_features.csv
+- [x] data/splits/train.csv + val.csv + test.csv (22-27% positive rate)
+
+### Model artefacts
+
+- [x] models/propensity_final.pkl (Logistic Regression, selected model)
+- [x] models/propensity_final_calibrated.pkl (isotonic calibrated)
+
+### Key results
+
+| Model         | Test_AUC | Gap    | Diagnosis           |
+|---------------|----------|--------|---------------------|
+| Logistic Reg  | 0.7706   | -0.023 | WELL BALANCED       |
+| Decision Tree | 0.7356   | 0.012  | WELL BALANCED       |
+| Random Forest | 0.7631   | 0.037  | WELL BALANCED       |
+| XGBoost       | 0.7299   | 0.166  | HIGH VARIANCE       |
+| LightGBM      | 0.7661   | 0.021  | WELL BALANCED       |
+| Stacking Ens  | 0.7302   | 0.133  | HIGH VARIANCE       |
+| Voting Ens    | 0.7544   | 0.097  | MODERATE VARIANCE   |
+
+Selected: **Logistic Regression** (Test AUC 0.7706, Lift@D1=3.05, passes G1/G2/G3)  
+Persona recovery: **3/3** (A in top decile 76.2%, B in decile 2-3 66.4%, C in bottom half 75.8%)
+
+### Stretch goals (future)
+
 - [ ] Add pytest coverage report to CI/CD
 - [ ] Add terraform fmt and tflint to CI/CD
 - [ ] Add pre-commit hooks (.pre-commit-config.yaml)
