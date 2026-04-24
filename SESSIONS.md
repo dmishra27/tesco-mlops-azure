@@ -1,4 +1,4 @@
-Last updated: 23 April 2026
+Last updated: 24 April 2026
 
 ## Session 1 — 23 April 2026 (completed)
 
@@ -58,38 +58,44 @@ Last updated: 23 April 2026
 
 ---
 
-## Session 2 — 24 April 2026 (to do)
+## Session 2 — 24 April 2026 (completed)
 
-### Gap 1 — Power BI / Synapse (MISSING from spec)
-- [ ] docs/powerbi_integration.md
-- [ ] infra/terraform/main.tf — add azurerm_synapse_workspace
-- [ ] README.md — add Power BI row to Tech Stack table
+### Gap 1 — Power BI / Synapse
+- [x] docs/powerbi_integration.md
+- [x] infra/terraform/main.tf — azurerm_synapse_workspace + filesystem + firewall + RBAC
+- [x] infra/terraform/variables.tf — synapse_sql_admin_username/password (sensitive)
+- [x] infra/terraform/outputs.tf — synapse_workspace_name + synapse_serverless_endpoint
+- [x] README.md — Analytics/BI row added to Tech Stack table
 
-### Gap 2 — Airflow DAGs (verify exist, create if missing)
-- [ ] airflow/dags/tesco_ml_pipeline.py — daily training DAG
-- [ ] airflow/dags/tesco_batch_scoring.py — weekly scoring DAG
-- [ ] airflow/requirements.txt
+### Gap 2 — Airflow DAGs (verified exist)
+- [x] airflow/dags/tesco_ml_pipeline.py — daily training DAG ✓
+- [x] airflow/dags/tesco_batch_scoring.py — weekly scoring DAG ✓
+- [x] airflow/requirements.txt ✓
 
-### Gap 3 — Tests (verify 25 tests exist and pass)
-- [ ] tests/conftest.py — shared fixtures
-- [ ] tests/unit/test_feature_engineering.py — 12 tests
-- [ ] tests/unit/test_score_api.py — 13 tests
-- [ ] Run pytest and confirm 25 tests pass
+### Gap 3 — Tests (28 tests, all passing)
+- [x] tests/conftest.py — fixed: timestamp fixture now produces pd.Timestamp
+- [x] tests/unit/test_feature_engineering.py — 13 tests; fixed include_groups FutureWarning
+- [x] tests/unit/test_score_api.py — 15 tests
+- [x] pytest: 28 passed, 0 warnings
 
 ### Gap 4 — Fix SIGIR DOI (CRITICAL)
-- [ ] README.md — fix DOI from 3657967 to 3657765
+- [x] README.md — DOI fixed: 3657967 → 3657765
 
-### Gap 5 — Terraform tfvars example (MISSING)
-- [ ] infra/terraform/terraform.tfvars.example
-- [ ] README.md Quickstart — add cp command for tfvars setup
+### Gap 5 — Terraform tfvars example
+- [x] infra/terraform/terraform.tfvars.example
+- [x] README.md Quickstart — cp command added
 
-### Gap 6 — Architecture diagrams (verify exist)
-- [ ] docs/architecture_diagram.md — three Mermaid diagrams
+### Gap 6 — Architecture diagrams (verified exist)
+- [x] docs/architecture_diagram.md — three Mermaid diagrams present ✓
 
-### Gap 7 — Commit and push all Session 2 changes
-- [ ] git add .
-- [ ] git commit -m "feat: Session 2 gaps — Airflow, tests, Synapse, tfvars"
-- [ ] git push origin master
+### Gap 7 — Commit and push
+- [x] Committed: "feat: Session 2 gaps — Synapse/Power BI, tests, tfvars, DOI fix"
+- [x] Pushed to origin/master (056f848)
+
+### Stats
+- Files created: 2 (powerbi_integration.md, terraform.tfvars.example)
+- Files modified: 6 (README, main.tf, outputs.tf, variables.tf, conftest.py, test_feature_engineering.py)
+- Tests: 28 passed (was 0 passing due to conftest bug)
 
 ---
 
