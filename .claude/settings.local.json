@@ -4,7 +4,17 @@
       "Bash(git add *)",
       "Bash(git commit *)",
       "Bash(git remote *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(git -C /c/Users/dmish/projects/tesco-mlops-azure add SESSIONS.md)",
+      "Bash(git -C /c/Users/dmish/projects/tesco-mlops-azure commit -m 'docs: mark Session 2 complete in SESSIONS.md *)",
+      "Bash(git -C /c/Users/dmish/projects/tesco-mlops-azure push origin master)",
+      "Bash(git -C /c/Users/dmish/projects/tesco-mlops-azure add README.md)",
+      "Bash(git -C /c/Users/dmish/projects/tesco-mlops-azure commit -m 'fix: correct LinkedIn URL in README *)",
+      "Bash(pip install *)",
+      "Bash(python *)",
+      "Bash(tee /tmp/pipeline_output.txt)",
+      "Bash(git -C /c/Users/dmish/projects/tesco-mlops-azure add ml/local/generate.py ml/local/feature_engineering.py ml/local/run_pipeline.py docs/model_selection_results.md SESSIONS.md)",
+      "Bash(git -C /c/Users/dmish/projects/tesco-mlops-azure status --short)"
     ]
   }
 }

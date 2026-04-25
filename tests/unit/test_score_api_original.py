@@ -92,8 +92,8 @@ async def test_ready_body_contains_model_info(async_client):
     response = await async_client.get("/ready")
     body = response.json()
     assert body["status"] == "ready"
-    assert "model" in body
-    assert "stage" in body
+    assert "model_name"  in body
+    assert "model_stage" in body
 
 
 @pytest.mark.asyncio
