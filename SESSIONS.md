@@ -187,6 +187,7 @@ test_model_selection_justified_over_baseline AUC gap threshold adjusted from
 - [ ] Great Expectations data quality suite (ge_suite/) — not created in Sessions 1-3
 - [ ] databricks/notebooks/05_outcome_tracking.py — campaign response tracking notebook not created
 - [ ] Refactor feature_engineering.py main() to accept CLI arguments instead of hardcoded CSV paths — enables direct unit testing and brings coverage from 40% to 90%+
+- [ ] Fix LightGBM UserWarning "X does not have valid feature names" — pass pandas DataFrame not numpy array to LGBMClassifier fit() and predict_proba() calls in run_pipeline.py to preserve SHAP feature name labels in production output
 
 ---
 
