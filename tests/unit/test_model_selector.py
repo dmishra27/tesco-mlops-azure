@@ -145,6 +145,70 @@ def test_no_model_passes_all_gates():
     assert "random_forest"       in msg
 
 
+def test_no_model_approved_error_raised():
+    """
+    NoModelApprovedError must be raised when every model fails at least one gate.
+    This test exercises the G3 lift-gate failure path (lines 140, 180) which is
+    not covered by the existing test_no_model_passes_all_gates (which fails on G4).
+    - LR fails G3: lift_at_decile1 1.9 < threshold 2.5
+    - RF fails G1: AUC gain over LR is only 0.02 < required 0.03
+    """
+    selector = ModelSelector()
+    models = {
+        "logistic_regression": _mock_model("LR"),
+        "random_forest":       _mock_model("RF"),
+    }
+    metrics = {
+        "logistic_regression": _metrics(
+            test_auc=0.75, train_auc=0.755,
+            lift_at_decile1=1.9,   # G3 FAIL: 1.9 < 2.5
+        ),
+        "random_forest": _metrics(
+            test_auc=0.77, train_auc=0.775,   # G1 FAIL: gain 0.02 < 0.03
+        ),
+    }
+    with pytest.raises(NoModelApprovedError) as exc:
+        selector.select(models, metrics)
+    msg = str(exc.value)
+    assert "logistic_regression" in msg
+    assert "random_forest"       in msg
+    assert "lift gate"           in msg   # confirms the G3 branch was reached
+
+
+def test_tiebreaker_with_three_equal_models():
+    """
+    When three models all pass the quality gates and two of them (RF and LightGBM)
+    have AUC scores within the 0.01 tiebreaker delta of the best, Occam's razor
+    must select the simpler one (RF over LightGBM).
+    LR is approved but sits outside the tiebreaker window (0.043 below best).
+    """
+    selector = ModelSelector()
+    models = {
+        "logistic_regression": _mock_model("LR"),
+        "random_forest":       _mock_model("RF"),
+        "lightgbm":            _mock_model("LGBM"),
+    }
+    metrics = {
+        # LR auto-passes G1; all other gates pass with these values
+        "logistic_regression": _metrics(test_auc=0.800, train_auc=0.804),
+        # RF beats LR by 0.036 (> 0.03 threshold) — passes G1
+        "random_forest":       _metrics(test_auc=0.836, train_auc=0.840),
+        # LightGBM beats LR by 0.043 (> 0.03 threshold) — passes G1
+        # Gap between RF and LightGBM is 0.007 <= tiebreaker delta 0.01
+        "lightgbm":            _metrics(test_auc=0.843, train_auc=0.847),
+    }
+    result = selector.select(models, metrics)
+
+    # Occam's razor: RF and LightGBM are in the tie window; RF is simpler
+    assert result["selected_model_name"] == "random_forest"
+    assert "Occam" in result["selection_reason"]
+    # All three pass their gates — no rejections
+    assert len(result["rejected_models"]) == 0
+    # Full report must include every model
+    reported_names = {row["model"] for row in result["metrics_table"]}
+    assert {"logistic_regression", "random_forest", "lightgbm"} == reported_names
+
+
 def test_selection_returns_full_report():
     """Selection report must be fully loggable to MLflow without extra processing."""
     selector = ModelSelector()
