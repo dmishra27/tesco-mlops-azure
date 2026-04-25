@@ -321,7 +321,7 @@ def train_all_models(
 
     # — LR —
     lr_pipe = Pipeline([("sc", StandardScaler()), ("cls", LogisticRegression(
-        solver="saga", max_iter=1000, random_state=seed, penalty="l2"))])
+        solver="saga", max_iter=1000, random_state=seed))])
     rs_lr = RandomizedSearchCV(lr_pipe, {
         "cls__C": loguniform(1e-3, 1e2), "cls__class_weight": ["balanced", None],
     }, n_iter=10, cv=cv, scoring="roc_auc", n_jobs=-1, random_state=seed, error_score=0)
