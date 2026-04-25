@@ -1,4 +1,4 @@
-Last updated: 25 April 2026 (Session 3 recovery complete)
+Last updated: 25 April 2026 (Session 4 partially complete)
 
 ## Session 1 — 23 April 2026 (completed)
 
@@ -175,19 +175,91 @@ test_model_selection_justified_over_baseline AUC gap threshold adjusted from
 
 ---
 
-## Session 4 — Future Work (25 April 2026)
+## Session 4 — 25 April 2026 (partially complete)
 
+### Completed today
+
+- [x] Priority 1 — CI/CD model quality gate
+      Added model-gate job between build and deploy in ci-cd.yml
+      New chain: test → build → model-gate → deploy → trigger-training
+      Script: .github/scripts/model_gate.py
+      6 gates enforced: AUC, overfit, lift, stability, silhouette, segment sizes
+      Degraded model cannot reach AKS regardless of what was committed
+      Commit: df12230
+
+- [x] Priority 2 — Coverage improvement
+      Added tests/unit/test_generate.py (9 tests)
+      Added tests/unit/test_local_feature_engineering.py (9 tests)
+      Added 2 new model_selector tests (lift gate + three-model tiebreaker)
+      Tests: 83 → 104 (all passing)
+      Coverage: 73% → 89% (target was 80%)
+      Commit: d7dff33
+
+- [x] FutureWarning fix
+      Removed redundant penalty="l2" from LogisticRegression in run_pipeline.py
+      sklearn FutureWarning suppressed; warnings reduced from 23 to 22
+      Commit: f948374
+
+- [x] LightGBM warning documented in backlog (Commit: 18955fc)
+
+- [x] feature_engineering.py CLI refactor documented in backlog (Commit: 272c360)
+
+---
+
+### Tomorrow — Session 4 continued
+
+#### Priority 5 — Thresholds single source of truth
+- [ ] Create ml/config/__init__.py
+- [ ] Create ml/config/thresholds.py with all 10 threshold constants
+- [ ] Update model_selection.py to import from ml.config.thresholds
+- [ ] Update model_gates.py to import from ml.config.thresholds
+- [ ] Update .github/scripts/model_gate.py to import from ml.config.thresholds
+- [ ] Create tests/unit/test_thresholds.py (4 tests)
+- [ ] Verify no inline threshold values remain in any of the three files
+- [ ] Run full suite — confirm 108 tests pass
+- [ ] Commit and push
+
+#### Priority 3 — Great Expectations suite
+- [ ] Create ge_suite/tesco_transactions.json
+      Expectations: transaction_id not null, total_amount 0.01-5000,
+      customer_id pattern, timestamp not future, channel in [online, in-store],
+      quantity positive integer
+- [ ] Create databricks/notebooks/00_data_validation.py
+      Runs GE suite on bronze partition, saves results as MLflow artifact,
+      fails DAG if score < 0.95
+- [ ] Add as first task in airflow/dags/tesco_ml_pipeline.py
+- [ ] Create tests/unit/test_data_validation.py
+      (4 tests: valid passes, null fails, negative amount fails, future timestamp fails)
+- [ ] Commit and push
+
+#### Priority 4 — Outcome tracking notebook
+- [ ] Create databricks/notebooks/05_outcome_tracking.py
+      Joins inference_log against actual transactions (7-day lookback)
+      Computes realised lift per decile
+      Logs to MLflow on Production model
+      Triggers retraining if lift@D1 < 1.5 OR 30 days since last retrain
+- [ ] Add as weekly task in Airflow DAG
+- [ ] Commit and push
+
+#### Priority 6 — GDPR /explain endpoint
+- [ ] Add /explain endpoint to ml/score.py
+      Single customer input, returns SHAP values + human-readable explanation sentence
+      Logs to gold/explanation_log for GDPR audit trail
+- [ ] Add contract tests in test_score_api_tdd.py (4 tests)
+- [ ] Commit and push
+
+#### Session 4 backlog (carry forward)
+- [ ] Fix LightGBM UserWarning — pass DataFrame not numpy array to LGBMClassifier calls
+- [ ] Refactor feature_engineering.py main() to accept CLI arguments
+- [ ] Pre-commit hooks (.pre-commit-config.yaml)
+- [ ] terraform fmt + tflint in CI/CD
 - [ ] Deploy to Azure when subscription available
 - [ ] Connect real Event Hub stream
 - [ ] Replace synthetic labels with real campaign response data
 - [ ] Unity Catalog feature store integration
 - [ ] Azure Purview data lineage
-- [ ] Add pre-commit hooks (.pre-commit-config.yaml)
-- [ ] terraform fmt and tflint in CI/CD
-- [ ] Great Expectations data quality suite (ge_suite/) — not created in Sessions 1-3
-- [ ] databricks/notebooks/05_outcome_tracking.py — campaign response tracking notebook not created
-- [ ] Refactor feature_engineering.py main() to accept CLI arguments instead of hardcoded CSV paths — enables direct unit testing and brings coverage from 40% to 90%+
-- [ ] Fix LightGBM UserWarning "X does not have valid feature names" — pass pandas DataFrame not numpy array to LGBMClassifier fit() and predict_proba() calls in run_pipeline.py to preserve SHAP feature name labels in production output
+- [ ] Great Expectations data quality suite (ge_suite/)
+- [ ] databricks/notebooks/05_outcome_tracking.py
 
 ---
 
@@ -195,4 +267,8 @@ test_model_selection_justified_over_baseline AUC gap threshold adjusted from
 - GitHub: https://github.com/dmishra27/tesco-mlops-azure
 - Stack: Azure + Databricks + MLflow + FastAPI + Airflow + Terraform + GitHub Actions
 - Python: 3.11
-- Total sessions planned: 3
+- Total commits: 18
+- Total tests: 104
+- Coverage ml/local: 89%
+- Coverage ml/score: 82%
+- Sessions completed: 4 (in progress)
