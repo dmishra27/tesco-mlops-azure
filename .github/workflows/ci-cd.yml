@@ -88,11 +88,46 @@ jobs:
           cache-from: type=registry,ref=${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest
           cache-to: type=inline
 
+  # ── Model Quality Gate ───────────────────────────────────────────────────────
+  # Runs after the container is built but BEFORE any deployment.
+  # Pulls the latest Staging model from MLflow, validates metrics against the
+  # same 6-gate thresholds used in ml/local/model_selection.py, and either
+  # promotes the model to Production (all gates pass) or exits with code 1,
+  # which blocks the deploy job entirely.  A degraded model can never reach AKS.
+  model-gate:
+    name: Model Quality Gate
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    outputs:
+      gate_passed:   ${{ steps.gate.outputs.gate_passed }}
+      model_version: ${{ steps.gate.outputs.model_version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install MLflow
+        run: pip install "mlflow[databricks]"
+
+      - name: Run model quality gates
+        id: gate
+        env:
+          MLFLOW_TRACKING_URI: databricks
+          DATABRICKS_HOST:     ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN:    ${{ secrets.DATABRICKS_TOKEN }}
+          REGISTERED_MODEL:    tesco-propensity
+        run: python .github/scripts/model_gate.py
+
   # ── Deploy to AKS ────────────────────────────────────────────────────────────
   deploy:
     name: Deploy to AKS
     runs-on: ubuntu-latest
-    needs: build
+    needs: model-gate          # blocked if model-gate fails or any gate exits 1
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
     environment: production
     steps:
