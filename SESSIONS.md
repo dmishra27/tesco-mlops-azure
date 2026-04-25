@@ -184,6 +184,7 @@ test_model_selection_justified_over_baseline AUC gap threshold adjusted from
 - [ ] Azure Purview data lineage
 - [ ] Add pre-commit hooks (.pre-commit-config.yaml)
 - [ ] terraform fmt and tflint in CI/CD
+- [ ] Great Expectations data quality suite (ge_suite/) — not created in Sessions 1-3
 
 ---
 
