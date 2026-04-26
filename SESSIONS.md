@@ -1,4 +1,4 @@
-Last updated: 26 April 2026 (Session 4 continued)
+Last updated: 26 April 2026 (Session 4 complete)
 
 ## Session 1 — 23 April 2026 (completed)
 
@@ -175,7 +175,7 @@ test_model_selection_justified_over_baseline AUC gap threshold adjusted from
 
 ---
 
-## Session 4 — 25 April 2026 (partially complete)
+## Session 4 — 25–26 April 2026 (completed)
 
 ### Completed today
 
@@ -240,14 +240,17 @@ test_model_selection_justified_over_baseline AUC gap threshold adjusted from
       Uses DatabricksRunNowOperator (consistent with tesco_ml_pipeline.py)
 - [x] Commit 223d0fc and push
 
-#### Priority 6 — GDPR /explain endpoint
-- [ ] Add /explain endpoint to ml/score.py
-      Single customer input, returns SHAP values + human-readable explanation sentence
-      Logs to gold/explanation_log for GDPR audit trail
-- [ ] Add contract tests in test_score_api_tdd.py (4 tests)
-- [ ] Commit and push
+#### Priority 6 — GDPR /explain endpoint ✅ COMPLETE
+- [x] Add POST /explain to ml/score.py
+      Request: single CustomerFeatures; Response: ExplainResponse with top_features + explanation sentence
+      _shap_approx(): perturbation-based (zeros each feature in scaler space, measures score delta) — no shap library required
+      _generate_explanation(): complete English sentence naming top 2 features + above/below average direction
+      _log_explanation(): GDPR audit CSV (EXPLANATION_LOG_PATH env var, fire-and-forget)
+      New models: TopFeature, ExplainResponse
+- [x] Add 4 contract tests to test_score_api_tdd.py (all passing)
+- [x] Commit f69be14 and push
 
-#### Session 4 backlog (carry forward)
+#### Session 4 backlog (carry to Session 5)
 - [ ] Fix LightGBM UserWarning — pass DataFrame not numpy array to LGBMClassifier calls
 - [ ] Refactor feature_engineering.py main() to accept CLI arguments
 - [ ] Pre-commit hooks (.pre-commit-config.yaml)
@@ -257,8 +260,8 @@ test_model_selection_justified_over_baseline AUC gap threshold adjusted from
 - [ ] Replace synthetic labels with real campaign response data
 - [ ] Unity Catalog feature store integration
 - [ ] Azure Purview data lineage
-- [ ] Great Expectations data quality suite (ge_suite/)
-- [ ] databricks/notebooks/05_outcome_tracking.py
+- [x] Great Expectations data quality suite (ge_suite/) — completed Priority 3
+- [x] databricks/notebooks/05_outcome_tracking.py — completed Priority 4
 
 ---
 
@@ -266,8 +269,8 @@ test_model_selection_justified_over_baseline AUC gap threshold adjusted from
 - GitHub: https://github.com/dmishra27/tesco-mlops-azure
 - Stack: Azure + Databricks + MLflow + FastAPI + Airflow + Terraform + GitHub Actions
 - Python: 3.11
-- Total commits: 18
-- Total tests: 104
-- Coverage ml/local: 89%
-- Coverage ml/score: 82%
-- Sessions completed: 4 (in progress)
+- Total commits: 25
+- Total tests: 116
+- Coverage ml/local: 90%
+- Coverage ml/score: 77%
+- Sessions completed: 4
