@@ -1,4 +1,4 @@
-Last updated: 26 April 2026 (project closed)
+Last updated: 26 April 2026 (Session 4 closed, Session 5 ready to start 27 April 2026)
 
 ## Session 1 — 23 April 2026 (completed)
 
@@ -265,14 +265,100 @@ infrastructure or real data access.
 
 ---
 
-## Session 5 — Future Work (requires Azure infrastructure access)
+## Session 5 — 27 April 2026 (not yet started)
 
-- [ ] Deploy to Azure when subscription available
-- [ ] Connect real Event Hub stream
-- [ ] Replace synthetic labels with real campaign response data
-- [ ] Unity Catalog feature store integration
-- [ ] Azure Purview data lineage
-- [ ] Refactor feature_engineering.py main() to accept CLI arguments
+### Project state as of 26 April 2026 (end of Session 4)
+
+**Git state:**
+- Last commit: f2dd221 (project closure)
+- Total commits: 30
+- Branch: master
+- Remote: https://github.com/dmishra27/tesco-mlops-azure
+
+**Test state:**
+- Total tests: 119 passing, 0 failing
+- ml/local coverage: 90%
+- ml/score coverage: 80%
+- Overall coverage: 83%
+- Last full run: 26 April 2026
+
+**All Session 4 priorities: COMPLETE**
+- P1: CI/CD model quality gate (df12230)
+- P2: Coverage 73%→90% (d7dff33)
+- P3: Great Expectations suite (8b16ab7)
+- P4: Outcome tracking notebook (223d0fc)
+- P5: Thresholds single source of truth (731617b)
+- P6: GDPR /explain endpoint (f69be14)
+- Closure A: LightGBM fix + coverage 80% (ef1317b)
+- Closure B: Pre-commit hooks (de53224)
+- Closure C: Terraform lint (2476762)
+- Closure E: Project closure docs (f2dd221)
+
+**Session 5 pick-up tasks (in priority order):**
+
+Priority 1 — feature_engineering.py CLI refactor
+  WHY: main() hardcodes paths → coverage stuck at 40%
+  WHAT: refactor main() to accept CLI arguments:
+    --storage-account, --snapshot-date, --output-path
+  BENEFIT: coverage 40%→90%, production-grade CLI
+  FILE: ml/local/feature_engineering.py
+
+Priority 2 — Deploy to Azure (requires subscription)
+  WHY: full infrastructure never deployed to real Azure
+  WHAT: terraform init && terraform plan && terraform apply
+  PREREQ: Azure subscription with budget allocated
+  FILE: infra/terraform/main.tf
+
+Priority 3 — Connect real Event Hub stream
+  WHY: producer/send_event.py uses synthetic data only
+  WHAT: configure real Tesco POS event schema
+  PREREQ: Azure Event Hubs namespace provisioned
+  FILE: databricks/notebooks/01_ingest.py
+
+Priority 4 — Unity Catalog feature store
+  WHY: current silver layer has no governance layer
+  WHAT: register customer_features as Unity Catalog table
+  PREREQ: Databricks Premium workspace provisioned
+  FILES: databricks/notebooks/02_feature_engineering.py
+
+Priority 5 — Azure Purview data lineage
+  WHY: bronze→silver→gold lineage not automatically tracked
+  WHAT: configure Purview scanning on ADLS Gen2 containers
+  PREREQ: Azure Purview account provisioned
+  FILES: infra/terraform/main.tf
+
+Priority 6 — Replace synthetic labels with real data
+  WHY: run_pipeline.py uses generated personas
+  WHAT: connect to real campaign response history
+  PREREQ: historical Tesco campaign data available
+  FILES: ml/local/generate.py, ml/local/run_pipeline.py
+
+**Restore command for 27 April 2026:**
+Read SESSIONS.md and CLAUDE.md to restore full project context.
+Run: date +"%d %B %Y"
+Update the "Last updated" line in SESSIONS.md to today's date.
+Run: git log --oneline -5
+Run: python -m pytest tests/ -q 2>&1 | tail -3
+Confirm 119 tests still passing.
+Show me the Session 5 pick-up tasks from SESSIONS.md.
+Do not start any work yet. Wait for my next message.
+
+**Key architectural decisions to remember:**
+- TimeSeriesSplit(gap=7) NOT StratifiedKFold (retail time-series)
+- ml/config/thresholds.py is SINGLE SOURCE OF TRUTH for all gates
+- propensity_auc_min = 0.70 (was 0.65 — fixed Session 4 P5)
+- LightGBM MUST receive pd.DataFrame(X, columns=FEATURE_COLS)
+  not numpy arrays (UserWarning fix, commit ef1317b)
+- FastAPI not Flask (bug fix #7)
+- uvicorn not gunicorn (bug fix #9)
+- MLFLOW_TRACKING_URI from K8s Secret not ConfigMap (bug fix #10)
+- All secrets via dbutils.secrets.get() not hardcoded (bug fix #6)
+- ACR Premium not Basic (bug fix #3)
+- Key Vault with purge_protection=true (bug fix #4)
+
+**SIGIR 2024 paper DOI:** 10.1145/3626772.3657765
+**GitHub:** https://github.com/dmishra27/tesco-mlops-azure
+**Python version:** 3.11 (production), 3.14.3 (local Windows)
 
 ---
 
@@ -280,7 +366,7 @@ infrastructure or real data access.
 - GitHub: https://github.com/dmishra27/tesco-mlops-azure
 - Stack: Azure + Databricks + MLflow + FastAPI + Airflow + Terraform + GitHub Actions
 - Python: 3.11
-- Total commits: 29
+- Total commits: 30
 - Total tests: 119
 - Coverage ml/local: 90%
 - Coverage ml/score: 80%
