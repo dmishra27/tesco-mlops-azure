@@ -4,6 +4,8 @@ Orchestrates the full Tesco customer segmentation and propensity
 training pipeline via Databricks notebooks, running daily at 02:00 UTC.
 
 Task graph (daily):
+    data_validation          ← halts DAG if bronze score < 0.95
+         │
     ingest_streaming
          │
     feature_engineering
@@ -28,6 +30,7 @@ JOB_NAME             = "tesco-mlops-training-pipeline"
 DRIFT_NOTEBOOK_PATH  = "/Shared/tesco-mlops/drift_detector"
 
 # Job task keys must match those defined in databricks/jobs/run_job.json
+TASK_VALIDATION   = "data_validation"
 TASK_INGEST       = "ingest"
 TASK_FEATURES     = "feature_engineering"
 TASK_SEGMENTATION = "train_segmentation"
@@ -75,6 +78,15 @@ with DAG(
     max_active_runs=1,
     tags=["tesco", "mlops", "databricks", "training"],
 ) as dag:
+
+    # ── Task 0: validate bronze layer — halts DAG if score < 0.95 ────────────
+    data_validation = DatabricksRunNowOperator(
+        task_id="data_validation",
+        databricks_conn_id=DATABRICKS_CONN_ID,
+        job_name=JOB_NAME,
+        notebook_params={},
+        tasks_to_run=[TASK_VALIDATION],
+    )
 
     # ── Task 1: ingest transactions from Event Hub into bronze ────────────────
     ingest_streaming = DatabricksRunNowOperator(
@@ -147,8 +159,8 @@ with DAG(
     )
 
     # ── Dependency chains ─────────────────────────────────────────────────────
-    # Daily training: ingest → features → [segmentation ∥ propensity]
-    ingest_streaming >> feature_engineering >> [train_segmentation, train_propensity]
+    # Daily training: validate → ingest → features → [segmentation ∥ propensity]
+    data_validation >> ingest_streaming >> feature_engineering >> [train_segmentation, train_propensity]
 
     # Weekly monitoring: runs independently after feature_engineering completes.
     # Branch resolves to trigger_retraining (red) or drift_stable (green/yellow).

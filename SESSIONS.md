@@ -208,16 +208,16 @@ test_model_selection_justified_over_baseline AUC gap threshold adjusted from
 
 ### Tomorrow — Session 4 continued
 
-#### Priority 5 — Thresholds single source of truth
-- [ ] Create ml/config/__init__.py
-- [ ] Create ml/config/thresholds.py with all 10 threshold constants
-- [ ] Update model_selection.py to import from ml.config.thresholds
-- [ ] Update model_gates.py to import from ml.config.thresholds
-- [ ] Update .github/scripts/model_gate.py to import from ml.config.thresholds
-- [ ] Create tests/unit/test_thresholds.py (4 tests)
-- [ ] Verify no inline threshold values remain in any of the three files
-- [ ] Run full suite — confirm 108 tests pass
-- [ ] Commit and push
+#### Priority 5 — Thresholds single source of truth ✅ COMPLETE
+- [x] Create ml/config/__init__.py
+- [x] Create ml/config/thresholds.py with all 10+1 threshold constants (auc_regression_max added as 11th)
+- [x] Update model_selection.py to import from ml.config.thresholds (keys renamed: baseline_gain_min→baseline_gate_min_gain, tiebreaker_auc_delta→tiebreaker_delta, ensemble_gain_min→ensemble_justification_delta)
+- [x] Update model_gates.py to import from ml.config.thresholds (propensity_auc_min 0.65→0.70)
+- [x] Update .github/scripts/model_gate.py to import from ml.config.thresholds (7 key renames)
+- [x] Create tests/unit/test_thresholds.py (4 tests)
+- [x] Verify no inline threshold values remain in any of the three files
+- [x] Run full suite — 108 tests pass
+- [x] Commit 731617b and push
 
 #### Priority 3 — Great Expectations suite
 - [ ] Create ge_suite/tesco_transactions.json
