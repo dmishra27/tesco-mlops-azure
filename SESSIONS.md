@@ -254,7 +254,7 @@ test_model_selection_justified_over_baseline AUC gap threshold adjusted from
 - [ ] Fix LightGBM UserWarning — pass DataFrame not numpy array to LGBMClassifier calls
 - [ ] Refactor feature_engineering.py main() to accept CLI arguments
 - [x] Pre-commit hooks (.pre-commit-config.yaml) — ruff, ruff-format, trailing-whitespace, end-of-file-fixer, check-yaml, check-json, check-merge-conflict, detect-private-key, terraform_fmt, terraform_validate; pre-commit/action@v3.0.1 wired into CI/CD test job
-- [ ] terraform fmt + tflint in CI/CD
+- [x] terraform fmt + tflint in CI/CD — terraform-lint job added to ci-cd.yml (hashicorp/setup-terraform@v3, terraform-linters/setup-tflint@v4)
 - [ ] Deploy to Azure when subscription available
 - [ ] Connect real Event Hub stream
 - [ ] Replace synthetic labels with real campaign response data

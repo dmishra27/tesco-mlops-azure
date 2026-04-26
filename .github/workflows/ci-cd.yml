@@ -53,6 +53,32 @@ jobs:
         run: pytest tests/unit/ -v --tb=short
         continue-on-error: false
 
+  # ── Terraform Lint ───────────────────────────────────────────────────────────
+  terraform-lint:
+    name: Terraform Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ">=1.5"
+
+      - name: Terraform Format Check
+        run: |
+          cd infra/terraform
+          terraform fmt -check -recursive
+
+      - name: Install tflint
+        uses: terraform-linters/setup-tflint@v4
+
+      - name: Run tflint
+        run: |
+          cd infra/terraform
+          tflint --init
+          tflint
+
   # ── Build & Push Docker Image ────────────────────────────────────────────────
   build:
     name: Build and Push Container Image
