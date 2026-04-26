@@ -251,3 +251,67 @@ async def test_explain_includes_audit_fields(client):
     assert "model_name"  in body
     assert "model_stage" in body
     assert "scored_at"   in body
+
+
+# ── /explain coverage tests ───────────────────────────────────────────────────
+
+@pytest.mark.asyncio
+async def test_explain_returns_503_when_model_not_loaded(client_no_model):
+    """POST /explain with no model loaded must return 503, not 500."""
+    r = await client_no_model.post("/explain", json=VALID_EXPLAIN)
+    assert r.status_code == 503
+
+
+def test_shap_approx_fallback_on_non_pipeline_model():
+    """_shap_approx must degrade gracefully for non-Pipeline and broken models."""
+    import numpy as np
+    from ml.score import _shap_approx, FEATURE_COLS
+
+    X = np.ones((1, len(FEATURE_COLS)))
+
+    # Case 1: plain dict — no named_steps → None fallback (lines 167-168)
+    result = _shap_approx({}, X, FEATURE_COLS)
+    assert isinstance(result, list)
+    assert len(result) == len(FEATURE_COLS)
+    for entry in result:
+        assert "feature" in entry
+        assert "impact"  in entry
+        assert "direction" in entry
+
+    # Case 2: model whose named_steps property raises → exception handler (lines 190-192)
+    class BrokenModel:
+        @property
+        def named_steps(self):
+            raise RuntimeError("deliberately broken")
+
+    result2 = _shap_approx(BrokenModel(), X, FEATURE_COLS)
+    assert isinstance(result2, list)
+    assert all("feature" in e for e in result2)
+
+
+def test_log_explanation_writes_csv(tmp_path):
+    """_log_explanation must write a CSV row including the writeheader path on first call."""
+    import csv as csv_mod
+    import ml.score as score_module
+
+    log_path = str(tmp_path / "test_explanation_log.csv")
+    original = score_module.EXPLANATION_LOG_PATH
+    score_module.EXPLANATION_LOG_PATH = log_path
+
+    try:
+        score_module._log_explanation(
+            customer_id        = "CUST-0042",
+            scored_at          = "2026-04-26T10:30:00+00:00",
+            model_version      = "1.0.0",
+            propensity_score   = 0.82,
+            top_feature        = "frequency",
+            top_feature_impact = 0.187,
+        )
+        assert os.path.exists(log_path)
+        with open(log_path) as f:
+            rows = list(csv_mod.DictReader(f))
+        assert len(rows) == 1
+        assert rows[0]["customer_id"]  == "CUST-0042"
+        assert rows[0]["top_feature"]  == "frequency"
+    finally:
+        score_module.EXPLANATION_LOG_PATH = original

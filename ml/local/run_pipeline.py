@@ -319,6 +319,10 @@ def train_all_models(
 ) -> dict:
     cv = TimeSeriesSplit(n_splits=5, gap=7)
 
+    # DataFrames with column names for LightGBM — eliminates UserWarning about feature names
+    lgbm_train = pd.DataFrame(X_train, columns=FEATURE_COLS)
+    lgbm_val   = pd.DataFrame(X_val,   columns=FEATURE_COLS)
+
     # — LR —
     lr_pipe = Pipeline([("sc", StandardScaler()), ("cls", LogisticRegression(
         solver="saga", max_iter=1000, random_state=seed))])
@@ -382,16 +386,16 @@ def train_all_models(
             "verbose": -1, "random_state": seed,
         }
         m = LGBMClassifier(**p)
-        m.fit(X_train, y_train, eval_set=[(X_val, y_val)],
+        m.fit(lgbm_train, y_train, eval_set=[(lgbm_val, y_val)],
               callbacks=[lgb.early_stopping(20, verbose=False), lgb.log_evaluation(-1)])
-        return roc_auc_score(y_val, m.predict_proba(X_val)[:, 1])
+        return roc_auc_score(y_val, m.predict_proba(lgbm_val)[:, 1])
     s_lgbm = optuna.create_study(direction="maximize", sampler=optuna.samplers.TPESampler(seed=seed))
     s_lgbm.optimize(lgbm_obj, n_trials=n_trials)
     bp2 = s_lgbm.best_params.copy()
     n_est_lgbm = bp2.pop("n_estimators")
     bp2.update({"verbose": -1, "random_state": seed})
     lgbm = LGBMClassifier(n_estimators=n_est_lgbm, **bp2)
-    lgbm.fit(X_train, y_train, eval_set=[(X_val, y_val)],
+    lgbm.fit(lgbm_train, y_train, eval_set=[(lgbm_val, y_val)],
              callbacks=[lgb.log_evaluation(-1)])
 
     return {
@@ -418,8 +422,13 @@ def evaluate_and_select(
     for name, info in trained.items():
         m = info["model"]
         models[name] = m
-        p_test  = m.predict_proba(X_test)[:, 1]
-        p_train = m.predict_proba(X_train)[:, 1]
+        if isinstance(m, LGBMClassifier):
+            X_t = pd.DataFrame(X_test,  columns=FEATURE_COLS)
+            X_r = pd.DataFrame(X_train, columns=FEATURE_COLS)
+        else:
+            X_t, X_r = X_test, X_train
+        p_test  = m.predict_proba(X_t)[:, 1]
+        p_train = m.predict_proba(X_r)[:, 1]
         metrics[name] = {
             "test_auc":        roc_auc_score(y_test,  p_test),
             "train_auc":       roc_auc_score(y_train, p_train),
@@ -511,7 +520,8 @@ def run_pipeline(config: dict | None = None) -> dict:
     print(f"Selected: {selected_name}")
 
     # 6 — Calibration on val set
-    val_proba = selected_obj.predict_proba(X_val)[:, 1]
+    X_val_in  = pd.DataFrame(X_val, columns=FEATURE_COLS) if isinstance(selected_obj, LGBMClassifier) else X_val
+    val_proba = selected_obj.predict_proba(X_val_in)[:, 1]
     iso = IsotonicRegression(out_of_bounds="clip")
     iso.fit(val_proba, y_val)
     joblib.dump(selected_obj, "models/propensity_final.pkl")
@@ -530,8 +540,9 @@ def run_pipeline(config: dict | None = None) -> dict:
     Path(f"{out_dir}/results/gate_report.json").write_text(json.dumps(gate_report, indent=2))
 
     # 8 — Score ALL customers (use full_features, not just training splits)
-    Xall            = full_features[FEATURE_COLS].fillna(0).values
-    raw_proba       = selected_obj.predict_proba(Xall)[:, 1]
+    Xall      = full_features[FEATURE_COLS].fillna(0).values
+    Xall_in   = pd.DataFrame(Xall, columns=FEATURE_COLS) if isinstance(selected_obj, LGBMClassifier) else Xall
+    raw_proba = selected_obj.predict_proba(Xall_in)[:, 1]
     cal_proba       = np.clip(iso.predict(raw_proba), 0.0, 1.0)
     seg_labels_full = seg_result["km_model"].predict(
         seg_result["scaler"].transform(Xall)
