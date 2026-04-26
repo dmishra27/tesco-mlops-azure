@@ -13,8 +13,7 @@ Required environment variables:
   DATABRICKS_TOKEN     – Databricks PAT
   REGISTERED_MODEL     – MLflow registered model name (default: tesco-propensity)
 
-Thresholds mirror ml/local/model_selection.py::SELECTION_THRESHOLDS so there
-is one source of truth.  Update both files together when requirements change.
+Thresholds are imported from ml.config.thresholds — single source of truth.
 """
 
 from __future__ import annotations
@@ -25,16 +24,7 @@ import sys
 import mlflow
 from mlflow import MlflowClient
 
-# ── Thresholds (mirror ml/local/model_selection.py::SELECTION_THRESHOLDS) ─────
-THRESHOLDS = {
-    "min_test_auc":     0.70,   # G1 – must beat this absolute floor
-    "max_overfit_gap":  0.08,   # G2 – train_auc − test_auc
-    "min_lift_decile1": 2.5,    # G3 – top-decile lift
-    "max_cv_std":       0.03,   # G4 – cross-val AUC std
-    "min_silhouette":   0.25,   # G5 – KMeans silhouette
-    "min_segment_size": 0.05,   # G6 – no segment smaller than 5 %
-    "max_segment_size": 0.70,   # G6 – no segment larger than 70 %
-}
+from ml.config.thresholds import SELECTION_THRESHOLDS
 
 MODEL_NAME = os.environ.get("REGISTERED_MODEL", "tesco-propensity")
 
@@ -131,11 +121,11 @@ def main() -> int:
     failures: list[str] = []
 
     checks = [
-        ("G1 – min test AUC",  test_auc,   THRESHOLDS["min_test_auc"],     ">="),
-        ("G2 – overfit gap",   overfit,    THRESHOLDS["max_overfit_gap"],  "<="),
-        ("G3 – lift @ D1",     lift,       THRESHOLDS["min_lift_decile1"], ">="),
-        ("G4 – CV std",        cv_std,     THRESHOLDS["max_cv_std"],       "<="),
-        ("G5 – silhouette",    silhouette, THRESHOLDS["min_silhouette"],   ">="),
+        ("G1 – min test AUC",  test_auc,   SELECTION_THRESHOLDS["propensity_auc_min"],   ">="),
+        ("G2 – overfit gap",   overfit,    SELECTION_THRESHOLDS["overfit_gap_max"],       "<="),
+        ("G3 – lift @ D1",     lift,       SELECTION_THRESHOLDS["lift_decile1_min"],      ">="),
+        ("G4 – CV std",        cv_std,     SELECTION_THRESHOLDS["cv_std_max"],            "<="),
+        ("G5 – silhouette",    silhouette, SELECTION_THRESHOLDS["silhouette_min"],        ">="),
     ]
     for label, value, threshold, op in checks:
         passed, row = _gate(label, value, threshold, op)
@@ -145,9 +135,9 @@ def main() -> int:
 
     for i, size in enumerate(segment_sizes):
         p_lo, row_lo = _gate(f"G6 – segment {i} min size", size,
-                             THRESHOLDS["min_segment_size"], ">=")
+                             SELECTION_THRESHOLDS["tiny_cluster_min"],    ">=")
         p_hi, row_hi = _gate(f"G6 – segment {i} max size", size,
-                             THRESHOLDS["max_segment_size"], "<=")
+                             SELECTION_THRESHOLDS["dominant_cluster_max"], "<=")
         rows += [row_lo, row_hi]
         if not p_lo:
             failures.append(f"G6: segment {i} too small ({size:.1%})")

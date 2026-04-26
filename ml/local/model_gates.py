@@ -11,17 +11,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any
 
-# ── Business-configurable thresholds ─────────────────────────────────────────
-
-THRESHOLDS: dict[str, float] = {
-    "silhouette_min":        0.25,
-    "dominant_cluster_max":  0.60,
-    "tiny_cluster_min":      0.01,
-    "propensity_auc_min":    0.65,
-    "auc_regression_max":    0.05,
-    "overfit_gap_max":       0.08,
-    "lift_decile1_min":      2.5,
-}
+from ml.config.thresholds import SELECTION_THRESHOLDS
 
 
 # ── Exception ─────────────────────────────────────────────────────────────────
@@ -64,7 +54,7 @@ class GateFailure(Exception):
 def run_segmentation_gates(
     silhouette_score: float,
     segment_sizes: list[float],
-    thresholds: dict[str, float] = THRESHOLDS,
+    thresholds: dict[str, float] = SELECTION_THRESHOLDS,
 ) -> dict[str, Any]:
     """
     Run quality gates on KMeans segmentation results.
@@ -147,7 +137,7 @@ def run_propensity_gates(
     train_auc: float,
     previous_production_auc: float,
     lift_at_decile1: float,
-    thresholds: dict[str, float] = THRESHOLDS,
+    thresholds: dict[str, float] = SELECTION_THRESHOLDS,
 ) -> dict[str, Any]:
     """
     Run quality gates on propensity model evaluation results.

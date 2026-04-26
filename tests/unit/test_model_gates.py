@@ -43,14 +43,14 @@ def test_segmentation_tiny_cluster_fails():
 
 
 def test_propensity_low_auc_fails():
-    """AUC < 0.65 barely outperforms random — campaign ROI would not justify personalisation."""
+    """AUC < 0.70 barely outperforms random — campaign ROI would not justify personalisation."""
     with pytest.raises(GateFailure) as exc_info:
         run_propensity_gates(test_auc=0.58, train_auc=0.60,
                              previous_production_auc=0.70, lift_at_decile1=3.0)
     exc = exc_info.value
     assert "test_auc" in str(exc)
     assert "0.58" in str(exc)
-    assert "0.65" in str(exc)
+    assert "0.7" in str(exc)
 
 
 def test_propensity_auc_regression_fails():

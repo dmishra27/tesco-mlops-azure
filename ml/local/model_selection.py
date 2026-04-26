@@ -10,16 +10,7 @@ from __future__ import annotations
 
 from typing import Any
 
-# ── Business-configurable constants ──────────────────────────────────────────
-
-SELECTION_THRESHOLDS: dict[str, float] = {
-    "baseline_gain_min":        0.03,   # must beat LR by this margin
-    "overfit_gap_max":          0.08,   # train - test gap
-    "lift_decile1_min":         2.5,    # top-decile lift
-    "cv_std_max":               0.03,   # cross-val stability
-    "tiebreaker_auc_delta":     0.01,   # within this → prefer simpler
-    "ensemble_gain_min":        0.015,  # ensemble must gain this over best single
-}
+from ml.config.thresholds import SELECTION_THRESHOLDS
 
 # Lower index = simpler (Occam's razor ordering)
 COMPLEXITY_ORDER: list[str] = [
@@ -159,7 +150,7 @@ class ModelSelector:
         if name == "logistic_regression":
             return True, ""
         gain = round(m["test_auc"] - lr_auc, 4)
-        thr  = self.thr["baseline_gain_min"]
+        thr  = self.thr["baseline_gate_min_gain"]
         if gain < thr:
             return False, f"gain {gain:.4f} < required {thr} over logistic_regression baseline"
         return True, ""
@@ -191,7 +182,7 @@ class ModelSelector:
     def _gate_ensemble(self, name: str, m: dict, best_single_auc: float) -> tuple[bool, str]:
         """G6: ensembles must gain > 0.015 AUC over best single model."""
         gain = round(m["test_auc"] - best_single_auc, 4)
-        thr  = self.thr["ensemble_gain_min"]
+        thr  = self.thr["ensemble_justification_delta"]
         if gain < thr:
             return False, f"AUC gain {gain:.4f} < required {thr} over best single model"
         return True, ""
@@ -203,7 +194,7 @@ class ModelSelector:
     ) -> tuple[str, dict]:
         """Among passing models, pick highest AUC; within 0.01, prefer simpler."""
         best_auc = max(m["test_auc"] for _, m in approved)
-        thr      = self.thr["tiebreaker_auc_delta"]
+        thr      = self.thr["tiebreaker_delta"]
 
         close = [(n, m) for n, m in approved if m["test_auc"] >= best_auc - thr]
 
@@ -221,7 +212,7 @@ class ModelSelector:
             return f"Only model passing all quality gates."
 
         best_auc = max(m["test_auc"] for _, m in approved)
-        thr      = self.thr["tiebreaker_auc_delta"]
+        thr      = self.thr["tiebreaker_delta"]
         selected_auc = next(m["test_auc"] for n, m in approved if n == selected)
         gap = round(best_auc - selected_auc, 4)
 
