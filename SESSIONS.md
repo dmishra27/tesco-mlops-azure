@@ -219,18 +219,13 @@ test_model_selection_justified_over_baseline AUC gap threshold adjusted from
 - [x] Run full suite — 108 tests pass
 - [x] Commit 731617b and push
 
-#### Priority 3 — Great Expectations suite
-- [ ] Create ge_suite/tesco_transactions.json
-      Expectations: transaction_id not null, total_amount 0.01-5000,
-      customer_id pattern, timestamp not future, channel in [online, in-store],
-      quantity positive integer
-- [ ] Create databricks/notebooks/00_data_validation.py
-      Runs GE suite on bronze partition, saves results as MLflow artifact,
-      fails DAG if score < 0.95
-- [ ] Add as first task in airflow/dags/tesco_ml_pipeline.py
-- [ ] Create tests/unit/test_data_validation.py
-      (4 tests: valid passes, null fails, negative amount fails, future timestamp fails)
-- [ ] Commit and push
+#### Priority 3 — Great Expectations suite ✅ COMPLETE
+- [x] Create ge_suite/tesco_transactions.json — 6 expectations (not-null, range, regex, not-in-future, set, min-value)
+- [x] Create ml/local/data_validation.py — testable validate() module; custom expect_column_values_to_not_be_in_future implemented
+- [x] Create databricks/notebooks/00_data_validation.py — bronze validation, MLflow logging, dbutils.notebook.exit halt on score < 0.95
+- [x] Add data_validation as first task in airflow/dags/tesco_ml_pipeline.py (before ingest_streaming)
+- [x] Create tests/unit/test_data_validation.py (4 tests — all passing)
+- [x] Commit 8b16ab7 and push
 
 #### Priority 4 — Outcome tracking notebook
 - [ ] Create databricks/notebooks/05_outcome_tracking.py

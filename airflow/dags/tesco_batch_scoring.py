@@ -1,9 +1,12 @@
 """
 DAG: tesco_weekly_scoring
 Loads the Production segmentation model from MLflow Registry,
-scores all customers in the gold layer, and writes propensity
-scores back to gold/propensity_scores (Delta, partitioned by
-run_date).
+scores all customers in the gold layer, writes propensity scores
+back to gold/propensity_scores (Delta, partitioned by run_date),
+and runs outcome tracking to measure realised lift.
+
+Task chain:
+    load_gold_customers → score_customers → validate_scores → outcome_tracking
 
 Runs weekly on Sunday at 03:00 UTC.
 """
@@ -18,9 +21,13 @@ import mlflow.sklearn
 import pandas as pd
 from airflow import DAG
 from airflow.operators.python import PythonOperator
+from airflow.providers.databricks.operators.databricks import DatabricksRunNowOperator
 
-MLFLOW_TRACKING_URI = os.environ["MLFLOW_TRACKING_URI"]
-STORAGE_ACCOUNT     = os.environ["STORAGE_ACCOUNT"]
+MLFLOW_TRACKING_URI  = os.environ["MLFLOW_TRACKING_URI"]
+STORAGE_ACCOUNT      = os.environ["STORAGE_ACCOUNT"]
+DATABRICKS_CONN_ID   = "databricks_default"
+JOB_NAME             = "tesco-mlops-training-pipeline"
+TASK_OUTCOME_TRACKING = "outcome_tracking"
 GOLD_SEG_PATH       = f"abfss://gold@{STORAGE_ACCOUNT}.dfs.core.windows.net/customer_segments"
 GOLD_PROP_PATH      = f"abfss://gold@{STORAGE_ACCOUNT}.dfs.core.windows.net/propensity_scores"
 SILVER_PATH         = f"abfss://silver@{STORAGE_ACCOUNT}.dfs.core.windows.net/customer_features"
@@ -195,5 +202,14 @@ with DAG(
         python_callable=validate_scores,
     )
 
-    # load → score → validate
-    load_customers >> score >> validate
+    # ── Task 4: measure realised lift, trigger retraining if needed ───────────
+    outcome_tracking = DatabricksRunNowOperator(
+        task_id="outcome_tracking",
+        databricks_conn_id=DATABRICKS_CONN_ID,
+        job_name=JOB_NAME,
+        notebook_params={},
+        tasks_to_run=[TASK_OUTCOME_TRACKING],
+    )
+
+    # load → score → validate → outcome_tracking
+    load_customers >> score >> validate >> outcome_tracking
