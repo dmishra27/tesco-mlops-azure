@@ -46,6 +46,9 @@ jobs:
       - name: Lint (ruff)
         run: ruff check ml/ producer/
 
+      - name: Run pre-commit checks
+        uses: pre-commit/action@v3.0.1
+
       - name: Run tests
         run: pytest tests/unit/ -v --tb=short
         continue-on-error: false

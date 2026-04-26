@@ -253,7 +253,7 @@ test_model_selection_justified_over_baseline AUC gap threshold adjusted from
 #### Session 4 backlog (carry to Session 5)
 - [ ] Fix LightGBM UserWarning — pass DataFrame not numpy array to LGBMClassifier calls
 - [ ] Refactor feature_engineering.py main() to accept CLI arguments
-- [ ] Pre-commit hooks (.pre-commit-config.yaml)
+- [x] Pre-commit hooks (.pre-commit-config.yaml) — ruff, ruff-format, trailing-whitespace, end-of-file-fixer, check-yaml, check-json, check-merge-conflict, detect-private-key, terraform_fmt, terraform_validate; pre-commit/action@v3.0.1 wired into CI/CD test job
 - [ ] terraform fmt + tflint in CI/CD
 - [ ] Deploy to Azure when subscription available
 - [ ] Connect real Event Hub stream
