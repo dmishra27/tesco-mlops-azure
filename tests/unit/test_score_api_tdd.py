@@ -195,3 +195,59 @@ async def test_predict_handles_single_customer(client):
     r = await client.post("/predict", json={"customers": [VALID_CUSTOMER]})
     assert r.status_code == 200
     assert len(r.json()["predictions"]) == 1
+
+
+# ── /explain ──────────────────────────────────────────────────────────────────
+
+VALID_EXPLAIN = {
+    "customer_id":     "CUST-0042",
+    "recency_days":    14.0,
+    "frequency":       28.0,
+    "monetary":        412.50,
+    "avg_basket_size": 14.73,
+    "basket_std":      4.20,
+    "online_ratio":    0.65,
+    "online_txns":     18.0,
+    "instore_txns":    10.0,
+    "active_days":     22.0,
+}
+
+
+@pytest.mark.asyncio
+async def test_explain_returns_200(client):
+    """POST /explain with a valid single-customer payload must return 200."""
+    r = await client.post("/explain", json=VALID_EXPLAIN)
+    assert r.status_code == 200
+
+
+@pytest.mark.asyncio
+async def test_explain_response_has_explanation_field(client):
+    """Response must contain a non-empty explanation sentence (> 20 characters)."""
+    r = await client.post("/explain", json=VALID_EXPLAIN)
+    assert r.status_code == 200
+    body = r.json()
+    assert "explanation" in body
+    assert isinstance(body["explanation"], str)
+    assert len(body["explanation"]) > 20
+
+
+@pytest.mark.asyncio
+async def test_explain_top_features_match_model_features(client):
+    """Every feature name returned in top_features must be a valid model feature column."""
+    r = await client.post("/explain", json=VALID_EXPLAIN)
+    assert r.status_code == 200
+    top_features = r.json()["top_features"]
+    assert len(top_features) > 0
+    for f in top_features:
+        assert f["feature"] in score_module.FEATURE_COLS
+
+
+@pytest.mark.asyncio
+async def test_explain_includes_audit_fields(client):
+    """Response must carry model_name, model_stage, and scored_at for GDPR audit trail."""
+    r = await client.post("/explain", json=VALID_EXPLAIN)
+    assert r.status_code == 200
+    body = r.json()
+    assert "model_name"  in body
+    assert "model_stage" in body
+    assert "scored_at"   in body

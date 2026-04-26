@@ -227,14 +227,18 @@ test_model_selection_justified_over_baseline AUC gap threshold adjusted from
 - [x] Create tests/unit/test_data_validation.py (4 tests — all passing)
 - [x] Commit 8b16ab7 and push
 
-#### Priority 4 — Outcome tracking notebook
-- [ ] Create databricks/notebooks/05_outcome_tracking.py
-      Joins inference_log against actual transactions (7-day lookback)
-      Computes realised lift per decile
-      Logs to MLflow on Production model
-      Triggers retraining if lift@D1 < 1.5 OR 30 days since last retrain
-- [ ] Add as weekly task in Airflow DAG
-- [ ] Commit and push
+#### Priority 4 — Outcome tracking notebook ✅ COMPLETE
+- [x] Create databricks/notebooks/05_outcome_tracking.py — 6-step notebook:
+      Step 1: load inference_log (7–14 day window)
+      Step 2: load bronze purchases, aggregate to customer level
+      Step 3: join + ntile(10) deciles + realised lift per decile
+      Step 4: print lift table (GOOD/WARN/POOR per decile)
+      Step 5: log all decile metrics + days_since_retrain to MLflow
+      Step 6: RETRAIN_REQUIRED if lift@D1 < 1.5 OR age > 30 days; else OK
+- [x] Add outcome_tracking as final task in airflow/dags/tesco_batch_scoring.py
+      Chain: load_customers >> score >> validate >> outcome_tracking
+      Uses DatabricksRunNowOperator (consistent with tesco_ml_pipeline.py)
+- [x] Commit 223d0fc and push
 
 #### Priority 6 — GDPR /explain endpoint
 - [ ] Add /explain endpoint to ml/score.py
