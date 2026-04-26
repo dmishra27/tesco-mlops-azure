@@ -1,4 +1,4 @@
-Last updated: 26 April 2026 (Session 4 complete)
+Last updated: 26 April 2026 (project closed)
 
 ## Session 1 — 23 April 2026 (completed)
 
@@ -177,6 +177,10 @@ test_model_selection_justified_over_baseline AUC gap threshold adjusted from
 
 ## Session 4 — 25–26 April 2026 (completed)
 
+Project implementation complete across 4 sessions, 3 days (23–26 April 2026).
+All core MLOps requirements delivered. Remaining items require Azure
+infrastructure or real data access.
+
 ### Completed today
 
 - [x] Priority 1 — CI/CD model quality gate
@@ -250,18 +254,25 @@ test_model_selection_justified_over_baseline AUC gap threshold adjusted from
 - [x] Add 4 contract tests to test_score_api_tdd.py (all passing)
 - [x] Commit f69be14 and push
 
-#### Session 4 backlog (carry to Session 5)
-- [ ] Fix LightGBM UserWarning — pass DataFrame not numpy array to LGBMClassifier calls
+#### Session 4 backlog — completed in closure
+- [x] Fix LightGBM UserWarning — DataFrames with FEATURE_COLS passed to all LGBMClassifier fit/predict calls (Commit: ef1317b)
+- [x] score.py coverage to 80%+ — 3 targeted tests added; 77% → 80% (Commit: ef1317b)
+- [x] Pre-commit hooks (.pre-commit-config.yaml) — ruff, ruff-format, trailing-whitespace, end-of-file-fixer, check-yaml, check-json, check-merge-conflict, detect-private-key, terraform_fmt, terraform_validate; pre-commit/action@v3.0.1 wired into CI/CD test job (Commit: de53224)
+- [x] terraform fmt + tflint in CI/CD — terraform-lint job added to ci-cd.yml (hashicorp/setup-terraform@v3, terraform-linters/setup-tflint@v4) (Commit: 2476762)
+- [x] Great Expectations data quality suite (ge_suite/) — completed Priority 3 (Commit: 8b16ab7)
+- [x] databricks/notebooks/05_outcome_tracking.py — completed Priority 4 (Commit: 223d0fc)
 - [ ] Refactor feature_engineering.py main() to accept CLI arguments
-- [x] Pre-commit hooks (.pre-commit-config.yaml) — ruff, ruff-format, trailing-whitespace, end-of-file-fixer, check-yaml, check-json, check-merge-conflict, detect-private-key, terraform_fmt, terraform_validate; pre-commit/action@v3.0.1 wired into CI/CD test job
-- [x] terraform fmt + tflint in CI/CD — terraform-lint job added to ci-cd.yml (hashicorp/setup-terraform@v3, terraform-linters/setup-tflint@v4)
+
+---
+
+## Session 5 — Future Work (requires Azure infrastructure access)
+
 - [ ] Deploy to Azure when subscription available
 - [ ] Connect real Event Hub stream
 - [ ] Replace synthetic labels with real campaign response data
 - [ ] Unity Catalog feature store integration
 - [ ] Azure Purview data lineage
-- [x] Great Expectations data quality suite (ge_suite/) — completed Priority 3
-- [x] databricks/notebooks/05_outcome_tracking.py — completed Priority 4
+- [ ] Refactor feature_engineering.py main() to accept CLI arguments
 
 ---
 
@@ -269,8 +280,8 @@ test_model_selection_justified_over_baseline AUC gap threshold adjusted from
 - GitHub: https://github.com/dmishra27/tesco-mlops-azure
 - Stack: Azure + Databricks + MLflow + FastAPI + Airflow + Terraform + GitHub Actions
 - Python: 3.11
-- Total commits: 25
-- Total tests: 116
+- Total commits: 29
+- Total tests: 119
 - Coverage ml/local: 90%
-- Coverage ml/score: 77%
-- Sessions completed: 4
+- Coverage ml/score: 80%
+- Sessions completed: 4 (closed)
