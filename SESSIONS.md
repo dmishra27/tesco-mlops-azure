@@ -294,6 +294,18 @@ infrastructure or real data access.
       test_generate_inference_log.py: 4 tests
       test_generate_drift_data.py: 2 tests
       test_local_feature_engineering.py: +2 CLI tests
+- [x] Added 4 missing loss-curve and bias-variance visualisations:
+      loss_curve_xgboost.png — XGBoost train/val logloss per boosting round,
+        best-iteration marker, overfitting-zone shading
+      loss_curve_lightgbm.png — identical layout for LightGBM binary_logloss
+      bias_variance_summary.png — all 5 models, 3 bars each (train/val/test AUC),
+        per-model diagnosis: HIGH VARIANCE / HIGH BIAS / WELL BALANCED
+      learning_curves_comparison.png — LR / RF / LightGBM subplot grid,
+        ±1 std band, diagnosis text per subplot
+      New functions: plot_xgb_loss_curve, plot_lgbm_loss_curve,
+        plot_all_models_bias_variance, plot_learning_curves_all_models
+      4 new tests added (142 passing, 0 failing)
+      docs/plots/ now has 14 PNGs + README.md gallery (commit 7c2a0cb)
 - [x] Fixed utcnow() deprecation warning in generate_inference_log.py
       datetime.datetime.utcnow() -> datetime.datetime.now(datetime.UTC);
       same fix applied in test_generate_inference_log.py;
@@ -435,7 +447,7 @@ Do not start any work yet. Wait for my next message.
 - Stack: Azure + Databricks + MLflow + FastAPI + Airflow + Terraform + GitHub Actions
 - Python: 3.11
 - Total commits: 34
-- Total tests: 138
+- Total tests: 142
 - Coverage ml/local: 84% overall (feature_engineering 97%, visualise 99%)
 - Coverage ml/score: 80%
 - Sessions completed: 5 (Part 1 complete, Part 2 pending Azure)
