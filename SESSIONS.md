@@ -265,7 +265,7 @@ infrastructure or real data access.
 
 ---
 
-## Session 5 — 27 April 2026 (in progress)
+## Session 5 — 27 April 2026 (Part 1 complete)
 
 ### Completed today
 
@@ -294,7 +294,44 @@ infrastructure or real data access.
       test_generate_inference_log.py: 4 tests
       test_generate_drift_data.py: 2 tests
       test_local_feature_engineering.py: +2 CLI tests
-- [x] Commit 3837aaa and pushed to origin/master
+- [x] Fixed utcnow() deprecation warning in generate_inference_log.py
+      datetime.datetime.utcnow() -> datetime.datetime.now(datetime.UTC);
+      same fix applied in test_generate_inference_log.py;
+      138 passing, 0 warnings (commit 35ef048)
+
+---
+
+### Session 5 Part 2 — Future Work (requires Azure access)
+
+Priority 1 — Deploy to Azure
+  WHY: full infrastructure never deployed to real Azure
+  WHAT: terraform init && terraform plan && terraform apply
+  PREREQ: Azure subscription with budget allocated
+  FILE: infra/terraform/main.tf
+
+Priority 2 — Connect real Event Hub stream
+  WHY: producer/send_event.py uses synthetic data only
+  WHAT: configure real Tesco POS event schema
+  PREREQ: Azure Event Hubs namespace provisioned
+  FILE: databricks/notebooks/01_ingest.py
+
+Priority 3 — Unity Catalog feature store
+  WHY: current silver layer has no governance layer
+  WHAT: register customer_features as Unity Catalog table
+  PREREQ: Databricks Premium workspace provisioned
+  FILES: databricks/notebooks/02_feature_engineering.py
+
+Priority 4 — Azure Purview data lineage
+  WHY: bronze->silver->gold lineage not automatically tracked
+  WHAT: configure Purview scanning on ADLS Gen2 containers
+  PREREQ: Azure Purview account provisioned
+  FILES: infra/terraform/main.tf
+
+Priority 5 — Replace synthetic labels with real campaign data
+  WHY: run_pipeline.py uses generated personas
+  WHAT: connect to real Tesco campaign response history
+  PREREQ: historical campaign data available
+  FILES: ml/local/generate.py, ml/local/run_pipeline.py
 
 ---
 
@@ -397,8 +434,8 @@ Do not start any work yet. Wait for my next message.
 - GitHub: https://github.com/dmishra27/tesco-mlops-azure
 - Stack: Azure + Databricks + MLflow + FastAPI + Airflow + Terraform + GitHub Actions
 - Python: 3.11
-- Total commits: 31
+- Total commits: 34
 - Total tests: 138
 - Coverage ml/local: 84% overall (feature_engineering 97%, visualise 99%)
 - Coverage ml/score: 80%
-- Sessions completed: 5 (in progress)
+- Sessions completed: 5 (Part 1 complete, Part 2 pending Azure)
