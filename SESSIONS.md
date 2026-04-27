@@ -1,4 +1,4 @@
-Last updated: 26 April 2026 (Session 4 closed, Session 5 ready to start 27 April 2026)
+Last updated: 27 April 2026 (Session 5 started)
 
 ## Session 1 — 23 April 2026 (completed)
 
@@ -265,9 +265,40 @@ infrastructure or real data access.
 
 ---
 
-## Session 5 — 27 April 2026 (not yet started)
+## Session 5 — 27 April 2026 (in progress)
 
-### Project state as of 26 April 2026 (end of Session 4)
+### Completed today
+
+- [x] Visualisation module (ml/local/visualise.py)
+      10 plot functions, all saving to docs/plots/ and returning filepath:
+      learning_curve, overfitting_curve, oob_trajectory, optuna_history,
+      calibration_curve, shap_importance, lift_chart, psi_heatmap,
+      segment_profiles, model_comparison
+- [x] Synthetic inference log generator (ml/local/generate_inference_log.py)
+      generate_inference_log(): n_customers, n_weeks, seed params;
+      persona A gets higher propensity scores; all 4 tests passing
+- [x] Synthetic drift data generator (ml/local/generate_drift_data.py)
+      generate_stable_features(), generate_drifted_features(),
+      compute_psi(); drift_magnitude=0.25 reliably exceeds PSI 0.20 threshold;
+      both PSI tests passing (stable<0.05, drifted>0.20)
+- [x] Notebook demo script (ml/local/run_visualisations.py)
+      FAST_CONFIG inline (n_customers=1500, n_optuna_trials=20, nonlinear=True);
+      calls all 10 visualisation functions; generates docs/plots/README.md gallery;
+      all 10 PNGs confirmed in docs/plots/
+- [x] feature_engineering.py CLI refactor (coverage 40% -> 97%)
+      main() accepts argv=None; --input-path, --output-path, --snapshot-date,
+      --storage-account CLI args; test_main_accepts_cli_arguments,
+      test_main_fails_gracefully_on_missing_path added
+- [x] New tests: 138 passing, 0 failing (was 119; +19 new tests)
+      test_visualise.py: 11 tests (10 plot functions + directory creation)
+      test_generate_inference_log.py: 4 tests
+      test_generate_drift_data.py: 2 tests
+      test_local_feature_engineering.py: +2 CLI tests
+- [x] Commit 3837aaa and pushed to origin/master
+
+---
+
+### Project state as of 27 April 2026 (end of Session 5 Part 1)
 
 **Git state:**
 - Last commit: f2dd221 (project closure)
@@ -366,8 +397,8 @@ Do not start any work yet. Wait for my next message.
 - GitHub: https://github.com/dmishra27/tesco-mlops-azure
 - Stack: Azure + Databricks + MLflow + FastAPI + Airflow + Terraform + GitHub Actions
 - Python: 3.11
-- Total commits: 30
-- Total tests: 119
-- Coverage ml/local: 90%
+- Total commits: 31
+- Total tests: 138
+- Coverage ml/local: 84% overall (feature_engineering 97%, visualise 99%)
 - Coverage ml/score: 80%
-- Sessions completed: 4 (closed)
+- Sessions completed: 5 (in progress)
