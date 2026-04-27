@@ -277,6 +277,213 @@ def plot_segment_profiles(segment_stats: pd.DataFrame) -> str:
 
 # ─── 10. Model comparison ────────────────────────────────────────────────────
 
+# ─── 11. XGBoost boosting-round loss curve ───────────────────────────────────
+
+def plot_xgb_loss_curve(evals_result: dict, model_name: str = "XGBoost") -> str:
+    """
+    evals_result format:
+      {"train": {"logloss": [...]}, "val": {"logloss": [...]}}
+    Keys are positional (train = index 0, val = index 1).
+    """
+    os.makedirs(PLOT_DIR, exist_ok=True)
+    keys = list(evals_result.keys())
+    train_key, val_key = keys[0], keys[1] if len(keys) > 1 else keys[0]
+    metric_key = list(evals_result[train_key].keys())[0]
+
+    train_loss = evals_result[train_key][metric_key]
+    val_loss   = evals_result[val_key][metric_key]
+    rounds     = list(range(len(train_loss)))
+    best_round = int(np.argmin(val_loss))
+    best_val   = val_loss[best_round]
+
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.plot(rounds, train_loss, "b-",  linewidth=1.5, label="Train Loss")
+    ax.plot(rounds, val_loss,   color="orange", linewidth=1.5, label="Val Loss")
+    ax.axvline(x=best_round, color="red", linestyle="--", linewidth=1.5,
+               label=f"Best: round {best_round}, loss {best_val:.4f}")
+    if best_round < len(rounds) - 1:
+        ax.axvspan(best_round, rounds[-1], alpha=0.08, color="red", label="Overfitting zone")
+    ax.annotate(
+        f"Best: round {best_round}\nloss {best_val:.4f}",
+        xy=(best_round, best_val),
+        xytext=(best_round + max(1, len(rounds) // 10), best_val + (max(val_loss) - min(val_loss)) * 0.15),
+        arrowprops=dict(arrowstyle="->", color="red"),
+        color="red", fontsize=9,
+    )
+    ax.set_xlabel("Boosting round")
+    ax.set_ylabel(metric_key.replace("_", " ").title())
+    ax.set_title(f"{model_name} — Train vs Val Loss ({metric_key} per Boosting Round)")
+    ax.legend()
+    ax.grid(True, alpha=0.3)
+    return _save("loss_curve_xgboost.png")
+
+
+# ─── 12. LightGBM boosting-round loss curve ──────────────────────────────────
+
+def plot_lgbm_loss_curve(evals_result: dict, model_name: str = "LightGBM") -> str:
+    """
+    evals_result format:
+      {"train": {"binary_logloss": [...]}, "val": {"binary_logloss": [...]}}
+    Keys are positional (train = index 0, val = index 1).
+    """
+    os.makedirs(PLOT_DIR, exist_ok=True)
+    keys = list(evals_result.keys())
+    train_key, val_key = keys[0], keys[1] if len(keys) > 1 else keys[0]
+    metric_key = list(evals_result[train_key].keys())[0]
+
+    train_loss = evals_result[train_key][metric_key]
+    val_loss   = evals_result[val_key][metric_key]
+    rounds     = list(range(len(train_loss)))
+    best_round = int(np.argmin(val_loss))
+    best_val   = val_loss[best_round]
+
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.plot(rounds, train_loss, "b-",  linewidth=1.5, label="Train Loss")
+    ax.plot(rounds, val_loss,   color="orange", linewidth=1.5, label="Val Loss")
+    ax.axvline(x=best_round, color="red", linestyle="--", linewidth=1.5,
+               label=f"Best: round {best_round}, loss {best_val:.4f}")
+    if best_round < len(rounds) - 1:
+        ax.axvspan(best_round, rounds[-1], alpha=0.08, color="red", label="Overfitting zone")
+    ax.annotate(
+        f"Best: round {best_round}\nloss {best_val:.4f}",
+        xy=(best_round, best_val),
+        xytext=(best_round + max(1, len(rounds) // 10), best_val + (max(val_loss) - min(val_loss)) * 0.15),
+        arrowprops=dict(arrowstyle="->", color="red"),
+        color="red", fontsize=9,
+    )
+    ax.set_xlabel("Boosting round")
+    ax.set_ylabel(metric_key.replace("_", " ").title())
+    ax.set_title(f"{model_name} — Train vs Val Loss ({metric_key} per Boosting Round)")
+    ax.legend()
+    ax.grid(True, alpha=0.3)
+    return _save("loss_curve_lightgbm.png")
+
+
+# ─── 13. All-model bias-variance diagnosis ────────────────────────────────────
+
+def plot_all_models_bias_variance(
+    metrics: dict[str, dict],
+    selected_model: str,
+) -> str:
+    """
+    metrics format per model:
+      {"train_auc": float, "val_auc": float, "test_auc": float, "cv_std": float}
+    """
+    os.makedirs(PLOT_DIR, exist_ok=True)
+
+    def _diagnose(train_auc: float, test_auc: float, val_auc: float) -> str:
+        gap = train_auc - test_auc
+        if gap > 0.08:
+            return "HIGH VARIANCE (overfit)"
+        if test_auc < 0.70:
+            return "HIGH BIAS (underfit)"
+        if gap < 0.02:
+            return "WELL BALANCED"
+        return "MODERATE VARIANCE"
+
+    model_names = list(metrics.keys())
+    n = len(model_names)
+    y = np.arange(n)
+    h = 0.25
+
+    train_aucs = [metrics[m].get("train_auc", 0.0) for m in model_names]
+    val_aucs   = [metrics[m].get("val_auc",   0.0) for m in model_names]
+    test_aucs  = [metrics[m].get("test_auc",  0.0) for m in model_names]
+
+    fig, ax = plt.subplots(figsize=(12, max(5, n * 0.9)))
+
+    # Base colours — gold for selected model, muted otherwise
+    def _bar_color(i: int, base: str) -> str:
+        if model_names[i] == selected_model:
+            return "gold" if base == "train" else ("orange" if base == "val" else "goldenrod")
+        return {"train": "steelblue", "val": "sandybrown", "test": "mediumseagreen"}[base]
+
+    for i in range(n):
+        ax.barh(y[i] + h, train_aucs[i], h * 0.9, color=_bar_color(i, "train"), label="Train AUC" if i == 0 else "")
+        ax.barh(y[i],     val_aucs[i],   h * 0.9, color=_bar_color(i, "val"),   label="Val AUC"   if i == 0 else "")
+        ax.barh(y[i] - h, test_aucs[i],  h * 0.9, color=_bar_color(i, "test"),  label="Test AUC"  if i == 0 else "")
+        diag = _diagnose(train_aucs[i], test_aucs[i], val_aucs[i])
+        ax.text(max(train_aucs[i], val_aucs[i], test_aucs[i]) + 0.005, y[i],
+                diag, va="center", fontsize=8, color="dimgray")
+
+    ax.axvline(x=0.70, color="red", linestyle="--", linewidth=1.2, label="AUC threshold (0.70)")
+    ax.set_yticks(y)
+    ax.set_yticklabels(model_names)
+    ax.set_xlabel("AUC score")
+    ax.set_title("All Models — Bias-Variance Diagnosis (Train / Val / Test AUC)")
+    ax.legend(loc="lower right")
+    ax.grid(True, alpha=0.3, axis="x")
+    plt.tight_layout()
+    return _save("bias_variance_summary.png")
+
+
+# ─── 14. Learning curves — multi-model comparison ────────────────────────────
+
+def plot_learning_curves_all_models(results: dict[str, dict]) -> str:
+    """
+    results format per model:
+      {"train_sizes": [...], "train_scores": [[...]], "val_scores": [[...]]}
+    Each row of train_scores / val_scores is one CV fold.
+    """
+    os.makedirs(PLOT_DIR, exist_ok=True)
+    model_names = list(results.keys())
+    n_models = len(model_names)
+
+    all_means = []
+    for name in model_names:
+        tr = np.array(results[name]["train_scores"])
+        vl = np.array(results[name]["val_scores"])
+        all_means.extend(tr.mean(axis=1).tolist())
+        all_means.extend(vl.mean(axis=1).tolist())
+    y_min = max(0.0, min(all_means) - 0.05)
+    y_max = min(1.0, max(all_means) + 0.05)
+
+    fig, axes = plt.subplots(n_models, 1, figsize=(9, 4 * n_models), sharex=False)
+    if n_models == 1:
+        axes = [axes]
+
+    fig.suptitle("Learning Curves — Bias-Variance Comparison Across Models", fontsize=13, y=1.01)
+
+    for ax, name in zip(axes, model_names):
+        sizes      = results[name]["train_sizes"]
+        tr_arr     = np.array(results[name]["train_scores"])
+        vl_arr     = np.array(results[name]["val_scores"])
+        tr_mean, tr_std = tr_arr.mean(axis=1), tr_arr.std(axis=1)
+        vl_mean, vl_std = vl_arr.mean(axis=1), vl_arr.std(axis=1)
+
+        ax.plot(sizes, tr_mean, "b-o", label="Train AUC")
+        ax.fill_between(sizes, tr_mean - tr_std, tr_mean + tr_std, alpha=0.15, color="blue")
+        ax.plot(sizes, vl_mean, color="orange", marker="o", label="Val AUC")
+        ax.fill_between(sizes, vl_mean - vl_std, vl_mean + vl_std, alpha=0.15, color="orange")
+
+        # Diagnosis at max training size
+        gap = float(tr_mean[-1] - vl_mean[-1])
+        if vl_mean[-1] < 0.70 and tr_mean[-1] < 0.70:
+            diag = "Both low — underfitting"
+        elif gap > 0.08:
+            diag = "Diverging — overfitting"
+        elif gap < 0.03:
+            diag = "Converged — well fitted"
+        else:
+            diag = f"Gap {gap:.2f} — moderate variance"
+
+        ax.text(0.97, 0.05, diag, transform=ax.transAxes,
+                ha="right", va="bottom", fontsize=9,
+                bbox=dict(boxstyle="round,pad=0.3", facecolor="lightyellow", alpha=0.8))
+
+        ax.set_ylim(y_min, y_max)
+        ax.set_xlabel("Training set size")
+        ax.set_ylabel("AUC")
+        ax.set_title(name.replace("_", " ").title())
+        ax.legend(fontsize=9)
+        ax.grid(True, alpha=0.3)
+
+    plt.tight_layout()
+    return _save("learning_curves_comparison.png")
+
+
+# ─── 10. Model comparison ────────────────────────────────────────────────────
+
 def plot_model_comparison(
     model_names: list[str],
     test_aucs: list[float],

@@ -1,5 +1,5 @@
 """
-Unit tests for ml.local.visualise — all 10 plot functions.
+Unit tests for ml.local.visualise — all 14 plot functions.
 """
 from __future__ import annotations
 
@@ -12,8 +12,11 @@ import pytest
 
 import ml.local.visualise as vis_mod
 from ml.local.visualise import (
+    plot_all_models_bias_variance,
     plot_calibration_curve,
     plot_learning_curves,
+    plot_learning_curves_all_models,
+    plot_lgbm_loss_curve,
     plot_lift_chart,
     plot_model_comparison,
     plot_oob_trajectory,
@@ -22,6 +25,7 @@ from ml.local.visualise import (
     plot_psi_heatmap,
     plot_segment_profiles,
     plot_shap_importance,
+    plot_xgb_loss_curve,
 )
 
 
@@ -164,3 +168,62 @@ def test_plots_saved_to_correct_directory(tmp_path, monkeypatch):
     assert os.path.isdir(new_dir), "Directory must be created by the plot function"
     assert os.path.exists(fp), "Plot file must exist"
     assert os.path.dirname(fp) == new_dir, "Plot must be saved in the configured PLOT_DIR"
+
+
+# ── Tests 3-6: new loss-curve and bias-variance functions ────────────────────
+
+def _fake_loss(n: int, start: float, fast_drop: float, overfit_after: int, slow_rise: float):
+    """Produce realistic-looking train or val loss vectors."""
+    return [max(0.01, start - i * fast_drop + max(0, (i - overfit_after) * slow_rise))
+            for i in range(n)]
+
+
+def test_xgb_loss_curve_saves_png():
+    rounds = 25
+    evals = {
+        "train": {"logloss": _fake_loss(rounds, 0.70, 0.020, 99, 0.000)},
+        "val":   {"logloss": _fake_loss(rounds, 0.72, 0.014, 12, 0.006)},
+    }
+    fp = plot_xgb_loss_curve(evals, "XGBoost")
+    assert os.path.exists(fp)
+    assert fp.endswith(".png")
+
+
+def test_lgbm_loss_curve_saves_png():
+    rounds = 25
+    evals = {
+        "train":   {"binary_logloss": _fake_loss(rounds, 0.68, 0.018, 99, 0.000)},
+        "valid_1": {"binary_logloss": _fake_loss(rounds, 0.70, 0.012, 14, 0.005)},
+    }
+    fp = plot_lgbm_loss_curve(evals, "LightGBM")
+    assert os.path.exists(fp)
+    assert fp.endswith(".png")
+
+
+def test_bias_variance_summary_saves_png():
+    metrics = {
+        "logistic_regression": {"train_auc": 0.78, "val_auc": 0.75, "test_auc": 0.76, "cv_std": 0.02},
+        "decision_tree":       {"train_auc": 0.95, "val_auc": 0.70, "test_auc": 0.71, "cv_std": 0.05},
+        "random_forest":       {"train_auc": 0.86, "val_auc": 0.77, "test_auc": 0.78, "cv_std": 0.03},
+    }
+    fp = plot_all_models_bias_variance(metrics, "logistic_regression")
+    assert os.path.exists(fp)
+    assert fp.endswith(".png")
+
+
+def test_learning_curves_comparison_saves_png():
+    results = {
+        "logistic_regression": {
+            "train_sizes":  [100, 200, 300],
+            "train_scores": [[0.70, 0.72], [0.75, 0.77], [0.78, 0.80]],
+            "val_scores":   [[0.65, 0.67], [0.68, 0.70], [0.70, 0.72]],
+        },
+        "random_forest": {
+            "train_sizes":  [100, 200, 300],
+            "train_scores": [[0.82, 0.84], [0.88, 0.90], [0.92, 0.94]],
+            "val_scores":   [[0.68, 0.70], [0.73, 0.75], [0.75, 0.77]],
+        },
+    }
+    fp = plot_learning_curves_all_models(results)
+    assert os.path.exists(fp)
+    assert fp.endswith(".png")

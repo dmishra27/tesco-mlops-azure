@@ -18,10 +18,12 @@ import pandas as pd
 
 optuna.logging.set_verbosity(optuna.logging.WARNING)
 
+import lightgbm as lgb
+from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score
-from sklearn.model_selection import learning_curve
+from sklearn.model_selection import TimeSeriesSplit, learning_curve
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeClassifier
@@ -42,8 +44,11 @@ from ml.local.run_pipeline import (
     train_all_models,
 )
 from ml.local.visualise import (
+    plot_all_models_bias_variance,
     plot_calibration_curve,
     plot_learning_curves,
+    plot_learning_curves_all_models,
+    plot_lgbm_loss_curve,
     plot_lift_chart,
     plot_model_comparison,
     plot_oob_trajectory,
@@ -52,6 +57,7 @@ from ml.local.visualise import (
     plot_psi_heatmap,
     plot_segment_profiles,
     plot_shap_importance,
+    plot_xgb_loss_curve,
 )
 
 FAST_CONFIG = {
@@ -269,6 +275,92 @@ def main():
     )
     print(f"  10. model_comparison -> {saved_plots['model_comparison']}")
 
+    # ── Augment metrics with val_auc for bias-variance plot ───────────────────
+    for mname, minfo in trained.items():
+        m = minfo["model"]
+        Xv = pd.DataFrame(X_val, columns=FEATURE_COLS) if isinstance(m, LGBMClassifier) else X_val
+        metrics[mname]["val_auc"] = float(roc_auc_score(y_val, m.predict_proba(Xv)[:, 1]))
+
+    # Plot 11 — XGBoost train/val loss curve
+    from xgboost import XGBClassifier as _XGB
+    _xgb_loss = _XGB(
+        n_estimators=200, learning_rate=0.1, max_depth=5,
+        eval_metric="logloss", early_stopping_rounds=20, random_state=cfg["seed"],
+    )
+    _xgb_loss.fit(
+        X_train, y_train,
+        eval_set=[(X_train, y_train), (X_val, y_val)],
+        verbose=False,
+    )
+    _xgb_evals = _xgb_loss.evals_result_
+    xgb_evals_for_plot = {
+        "train": _xgb_evals.get("validation_0", {"logloss": []}),
+        "val":   _xgb_evals.get("validation_1", {"logloss": []}),
+    }
+    saved_plots["xgb_loss_curve"] = plot_xgb_loss_curve(xgb_evals_for_plot, "XGBoost")
+    print(f"  11. xgb_loss_curve -> {saved_plots['xgb_loss_curve']}")
+
+    # Plot 12 — LightGBM train/val loss curve
+    _lgbm_evals: dict = {}
+    _lgbm_train_df = pd.DataFrame(X_train, columns=FEATURE_COLS)
+    _lgbm_val_df   = pd.DataFrame(X_val,   columns=FEATURE_COLS)
+    _lgbm_loss = LGBMClassifier(
+        n_estimators=200, learning_rate=0.05, num_leaves=31,
+        verbose=-1, random_state=cfg["seed"],
+    )
+    _lgbm_loss.fit(
+        _lgbm_train_df, y_train,
+        eval_set=[(_lgbm_train_df, y_train), (_lgbm_val_df, y_val)],
+        callbacks=[
+            lgb.record_evaluation(_lgbm_evals),
+            lgb.early_stopping(20, verbose=False),
+            lgb.log_evaluation(-1),
+        ],
+    )
+    lgbm_evals_for_plot = {
+        "train": _lgbm_evals.get("training", {"binary_logloss": []}),
+        "val":   _lgbm_evals.get("valid_1",  {"binary_logloss": []}),
+    }
+    saved_plots["lgbm_loss_curve"] = plot_lgbm_loss_curve(lgbm_evals_for_plot, "LightGBM")
+    print(f"  12. lgbm_loss_curve -> {saved_plots['lgbm_loss_curve']}")
+
+    # Plot 13 — All-model bias-variance diagnosis
+    saved_plots["bias_variance_summary"] = plot_all_models_bias_variance(metrics, selected_name)
+    print(f"  13. bias_variance_summary -> {saved_plots['bias_variance_summary']}")
+
+    # Plot 14 — Learning curves: LR, RF, LightGBM
+    cv_lc = TimeSeriesSplit(n_splits=3)
+
+    class _LGBMWrapper(BaseEstimator, ClassifierMixin):
+        def fit(self, X, y):
+            self._m = LGBMClassifier(n_estimators=50, verbose=-1, random_state=42)
+            self._m.fit(pd.DataFrame(X, columns=FEATURE_COLS), y)
+            return self
+        def predict_proba(self, X):
+            return self._m.predict_proba(pd.DataFrame(X, columns=FEATURE_COLS))
+
+    lc_results: dict = {}
+    for lc_name, lc_est in [
+        ("logistic_regression", Pipeline([("sc", StandardScaler()),
+                                          ("cls", LogisticRegression(max_iter=500, random_state=42))])),
+        ("random_forest",       RandomForestClassifier(n_estimators=50, random_state=42, n_jobs=-1)),
+        ("lightgbm",            _LGBMWrapper()),
+    ]:
+        _sz, _tr, _vl = learning_curve(
+            lc_est, X_train, y_train,
+            train_sizes=np.linspace(0.3, 1.0, 7),
+            cv=cv_lc, scoring="roc_auc",
+            n_jobs=1,  # n_jobs=1 for LightGBM thread safety
+        )
+        lc_results[lc_name] = {
+            "train_sizes":  _sz.tolist(),
+            "train_scores": _tr.tolist(),
+            "val_scores":   _vl.tolist(),
+        }
+
+    saved_plots["learning_curves_comparison"] = plot_learning_curves_all_models(lc_results)
+    print(f"  14. learning_curves_comparison -> {saved_plots['learning_curves_comparison']}")
+
     # ── Gallery README ────────────────────────────────────────────────────────
     _write_gallery_readme(saved_plots)
     print(f"\nGallery: {PLOT_DIR}/README.md")
@@ -277,16 +369,20 @@ def main():
 
 def _write_gallery_readme(saved_plots: dict[str, str]) -> None:
     labels = {
-        "learning_curve":    "Learning Curves — Logistic Regression",
-        "overfitting_curve": "Bias-Variance Tradeoff — Decision Tree",
-        "oob_trajectory":    "OOB Score vs Tree Count — Random Forest",
-        "optuna_history":    "Optuna Optimisation History — XGBoost",
-        "calibration_curve": "Calibration Curve — Selected Model",
-        "shap_importance":   "SHAP Feature Importance — Selected Model",
-        "lift_chart":        "Realised Lift by Propensity Decile",
-        "psi_heatmap":       "PSI Drift Heatmap — Feature Stability (8 weeks)",
-        "segment_profiles":  "Customer Segment Profiles",
-        "model_comparison":  "7-Model AUC Comparison",
+        "learning_curve":              "Learning Curves — Logistic Regression",
+        "overfitting_curve":           "Bias-Variance Tradeoff — Decision Tree",
+        "oob_trajectory":              "OOB Score vs Tree Count — Random Forest",
+        "optuna_history":              "Optuna Optimisation History — XGBoost",
+        "calibration_curve":           "Calibration Curve — Selected Model",
+        "shap_importance":             "SHAP Feature Importance — Selected Model",
+        "lift_chart":                  "Realised Lift by Propensity Decile",
+        "psi_heatmap":                 "PSI Drift Heatmap — Feature Stability (8 weeks)",
+        "segment_profiles":            "Customer Segment Profiles",
+        "model_comparison":            "7-Model AUC Comparison",
+        "xgb_loss_curve":              "XGBoost — Train vs Val Loss per Boosting Round",
+        "lgbm_loss_curve":             "LightGBM — Train vs Val Loss per Boosting Round",
+        "bias_variance_summary":       "All Models — Bias-Variance Diagnosis",
+        "learning_curves_comparison":  "Learning Curves — Bias-Variance Comparison Across Models",
     }
     lines = ["# Plot Gallery\n",
              "Generated by `ml/local/run_visualisations.py`.\n"]
