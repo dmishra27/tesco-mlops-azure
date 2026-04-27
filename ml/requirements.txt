@@ -19,3 +19,7 @@ pydantic==2.10.3
 # Azure SDK (ADLS access from scoring service)
 azure-storage-blob==12.23.1
 azure-identity==1.19.0
+
+# Visualisation
+matplotlib>=3.8.0
+seaborn>=0.13.0

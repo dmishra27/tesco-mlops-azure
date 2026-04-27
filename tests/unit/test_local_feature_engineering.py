@@ -7,12 +7,13 @@ Databricks-notebook-compatible version of the same logic.
 
 from __future__ import annotations
 
+import os
 from datetime import date
 
 import pandas as pd
 import pytest
 
-from ml.local.feature_engineering import build_features, assign_persona_labels
+from ml.local.feature_engineering import assign_persona_labels, build_features, main
 
 # Snapshot date: all test transactions fall before this date → recency >= 0.
 SNAPSHOT = date(2024, 1, 31)
@@ -163,3 +164,44 @@ def test_assign_persona_labels_unknown_persona_defaults_to_c_rate():
     assert rate < 0.20, (
         f"Unknown persona produced rate {rate:.2%}; expected near 8%"
     )
+
+
+# ── CLI refactor tests ────────────────────────────────────────────────────────
+
+def test_main_accepts_cli_arguments(tmp_path):
+    """
+    main() must accept --input-path and --output-path so it can be called
+    programmatically without touching sys.argv.
+    """
+    from ml.local.generate import generate
+
+    # Generate synthetic data into a temp input directory
+    input_dir = str(tmp_path / "synthetic")
+    generate(out_dir=input_dir)
+
+    output_dir = str(tmp_path / "output")
+    main([
+        "--input-path", input_dir,
+        "--output-path", output_dir,
+    ])
+
+    assert os.path.exists(os.path.join(output_dir, "features", "customer_features.csv")), \
+        "customer_features.csv not produced"
+    assert os.path.exists(os.path.join(output_dir, "splits", "train.csv")), \
+        "train.csv not produced"
+    assert os.path.exists(os.path.join(output_dir, "splits", "val.csv")), \
+        "val.csv not produced"
+    assert os.path.exists(os.path.join(output_dir, "splits", "test.csv")), \
+        "test.csv not produced"
+
+
+def test_main_fails_gracefully_on_missing_path(tmp_path):
+    """
+    main() must raise FileNotFoundError (or OSError) when the input path
+    does not exist — not crash with an unhandled AttributeError or KeyError.
+    """
+    with pytest.raises((FileNotFoundError, OSError)):
+        main([
+            "--input-path", str(tmp_path / "nonexistent_synthetic"),
+            "--output-path", str(tmp_path / "output"),
+        ])

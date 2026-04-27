@@ -16,6 +16,7 @@ Persona signal injection overrides the base label rate to the specified rates:
 
 from __future__ import annotations
 
+import argparse
 import os
 from datetime import date
 
@@ -87,12 +88,41 @@ def assign_persona_labels(
     return df.apply(_label, axis=1)
 
 
-def main():
-    os.makedirs("data/features", exist_ok=True)
-    os.makedirs("data/splits",   exist_ok=True)
+def main(argv=None):
+    parser = argparse.ArgumentParser(
+        description="Build RFM features and temporal train/val/test splits."
+    )
+    parser.add_argument(
+        "--input-path", default="data/synthetic",
+        help="Directory containing transactions.csv and customers.csv",
+    )
+    parser.add_argument(
+        "--output-path", default="data",
+        help="Output root; features/ and splits/ sub-directories are created here",
+    )
+    parser.add_argument(
+        "--snapshot-date", default=None,
+        help="Override the feature snapshot date (YYYY-MM-DD)",
+    )
+    parser.add_argument(
+        "--storage-account", default=None,
+        help="Azure storage account name (unused locally; for cloud integration)",
+    )
+    args = parser.parse_args(argv)
 
-    txns_df      = pd.read_csv("data/synthetic/transactions.csv")
-    customers_df = pd.read_csv("data/synthetic/customers.csv")
+    input_path   = args.input_path
+    output_path  = args.output_path
+    features_dir = os.path.join(output_path, "features")
+    splits_dir   = os.path.join(output_path, "splits")
+
+    os.makedirs(features_dir, exist_ok=True)
+    os.makedirs(splits_dir,   exist_ok=True)
+
+    txns_path = os.path.join(input_path, "transactions.csv")
+    custs_path = os.path.join(input_path, "customers.csv")
+
+    txns_df      = pd.read_csv(txns_path)
+    customers_df = pd.read_csv(custs_path)
     txns_df["date"] = pd.to_datetime(txns_df["date"])
 
     start_date = txns_df["date"].min()
@@ -113,7 +143,8 @@ def main():
     # Build full-window features (for reference CSV)
     full_features = build_features(txns_df, (start_date + pd.Timedelta(days=179)).date())
     full_features = full_features.merge(customers_df[["customer_id", "persona"]], on="customer_id", how="left")
-    full_features.to_csv("data/features/customer_features.csv", index=False)
+    features_csv = os.path.join(features_dir, "customer_features.csv")
+    full_features.to_csv(features_csv, index=False)
 
     print("=" * 60)
     print("FEATURE DISTRIBUTION SUMMARY")
@@ -121,7 +152,7 @@ def main():
     num_cols = ["recency_days", "frequency", "monetary", "avg_basket_size", "basket_std", "online_ratio", "active_days"]
     summary = full_features[num_cols].describe().T[["mean", "std", "min", "50%", "max"]].round(2)
     print(tabulate(summary, headers="keys", tablefmt="simple"))
-    print(f"\nSaved to data/features/customer_features.csv  ({len(full_features):,} customers)")
+    print(f"\nSaved to {features_csv}  ({len(full_features):,} customers)")
 
     # ── Build train/val split ─────────────────────────────────────────────────
     # Features from days 0-119; labels from days 120-149
@@ -156,9 +187,9 @@ def main():
     )
     test_df = test_features
 
-    train_df.to_csv("data/splits/train.csv", index=False)
-    val_df.to_csv("data/splits/val.csv",     index=False)
-    test_df.to_csv("data/splits/test.csv",   index=False)
+    train_df.to_csv(os.path.join(splits_dir, "train.csv"), index=False)
+    val_df.to_csv(  os.path.join(splits_dir, "val.csv"),   index=False)
+    test_df.to_csv( os.path.join(splits_dir, "test.csv"),  index=False)
 
     print("\n" + "=" * 60)
     print("TEMPORAL SPLIT CLASS BALANCE")
@@ -175,7 +206,7 @@ def main():
             flag = "  WARNING: Signal too strong -- check label definition"
         rows.append([name, n, pos, f"{rate:.1%}{flag}"])
     print(tabulate(rows, headers=["Split", "Customers", "Positives", "Positive_rate"], tablefmt="simple"))
-    print("\nSaved to data/splits/train.csv, val.csv, test.csv")
+    print(f"\nSaved to {splits_dir}/train.csv, val.csv, test.csv")
 
 
 if __name__ == "__main__":
