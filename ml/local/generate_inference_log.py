@@ -29,7 +29,7 @@ def generate_inference_log(
         model_version    – "1.0.0"
     """
     rng = np.random.default_rng(seed)
-    now = datetime.datetime.utcnow()
+    now = datetime.datetime.now(datetime.UTC)
     window_start = now - datetime.timedelta(weeks=n_weeks)
 
     # Persona split mirrors generate.py: A=10%, B=20%, C=70%

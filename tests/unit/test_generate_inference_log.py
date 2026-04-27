@@ -23,7 +23,7 @@ def test_output_has_required_columns(log_df):
 
 
 def test_scored_at_in_last_8_weeks(log_df):
-    now = datetime.datetime.utcnow()
+    now = datetime.datetime.now(datetime.UTC)
     cutoff = now - datetime.timedelta(weeks=8)
     earliest = log_df["scored_at"].min()
     latest   = log_df["scored_at"].max()
