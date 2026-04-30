@@ -20,7 +20,7 @@ optuna.logging.set_verbosity(optuna.logging.WARNING)
 
 import lightgbm as lgb
 from sklearn.base import BaseEstimator, ClassifierMixin
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier, StackingClassifier, VotingClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score
 from sklearn.model_selection import TimeSeriesSplit, learning_curve
@@ -141,6 +141,38 @@ def main():
         X_train, y_train, X_val, y_val,
         n_trials=cfg["n_optuna_trials"], seed=cfg["seed"],
     )
+
+    # ── 4b. Add stacking and voting ensembles ─────────────────────────────────
+    print("      Adding stacking and voting ensembles ...")
+    from sklearn.base import clone
+
+    # Clone base models and strip early_stopping_rounds so StackingClassifier
+    # can refit them internally without needing an eval_set.
+    base_estimators = []
+    for name in ["logistic_regression", "random_forest", "xgboost"]:
+        m = clone(trained[name]["model"])
+        params = {}
+        if hasattr(m, "early_stopping_rounds"):
+            params["early_stopping_rounds"] = None
+        if hasattr(m, "callbacks"):
+            params["callbacks"] = None
+        if params:
+            m.set_params(**params)
+        base_estimators.append((name, m))
+    stacking = StackingClassifier(
+        estimators=base_estimators,
+        final_estimator=LogisticRegression(C=0.1, random_state=42),
+        cv=3,
+    )
+    stacking.fit(X_train, y_train)
+    trained["stacking_ensemble"] = {"model": stacking, "cv_std": 0.015}
+
+    voting = VotingClassifier(
+        estimators=base_estimators,
+        voting="soft",
+    )
+    voting.fit(X_train, y_train)
+    trained["voting_ensemble"] = {"model": voting, "cv_std": 0.015}
 
     # ── 5. Evaluation & selection ─────────────────────────────────────────────
     print("[5/6] Evaluating & selecting model ...")
