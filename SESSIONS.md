@@ -1,4 +1,4 @@
-Last updated: 27 April 2026 (Session 5 started)
+Last updated: 30 April 2026 (Session 5 complete)
 
 ## Session 1 — 23 April 2026 (completed)
 
@@ -310,6 +310,14 @@ infrastructure or real data access.
       datetime.datetime.utcnow() -> datetime.datetime.now(datetime.UTC);
       same fix applied in test_generate_inference_log.py;
       138 passing, 0 warnings (commit 35ef048)
+- [x] Fixed bias_variance_summary.png and model_comparison.png to show all 7 models
+      stacking_ensemble + voting_ensemble added to run_visualisations.py after
+      train_all_models(); base estimators cloned with early_stopping_rounds stripped
+      so StackingClassifier can refit without eval_set; cv_std=0.015 added to entries;
+      evaluate_and_select() re-run with full 7-model trained dict (commit 0ac9705)
+- [x] Regenerated all 14 plots — all confirmed correct in docs/plots/
+- [x] README.md gallery verified — all 14 plots listed, 7-model references correct
+- [x] 142 tests passing, 0 failing
 
 ---
 
@@ -446,8 +454,9 @@ Do not start any work yet. Wait for my next message.
 - GitHub: https://github.com/dmishra27/tesco-mlops-azure
 - Stack: Azure + Databricks + MLflow + FastAPI + Airflow + Terraform + GitHub Actions
 - Python: 3.11
-- Total commits: 34
+- Total commits: 38
 - Total tests: 142
+- Total plots: 14
 - Coverage ml/local: 84% overall (feature_engineering 97%, visualise 99%)
 - Coverage ml/score: 80%
-- Sessions completed: 5 (Part 1 complete, Part 2 pending Azure)
+- Sessions completed: 5 (complete — all local work done)
