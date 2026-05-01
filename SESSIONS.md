@@ -1,4 +1,4 @@
-Last updated: 30 April 2026 (Session 5 complete)
+Last updated: 01 May 2026 (Session 6 — inference demo)
 
 ## Session 1 — 23 April 2026 (completed)
 
@@ -318,6 +318,13 @@ infrastructure or real data access.
 - [x] Regenerated all 14 plots — all confirmed correct in docs/plots/
 - [x] README.md gallery verified — all 14 plots listed, 7-model references correct
 - [x] 142 tests passing, 0 failing
+- [x] FastAPI inference demo committed (d5e7373)
+      serve_demo.py — 200 customers scored via /predict, top-5 via /explain,
+      results_predict.json, results_explain.json, test_input_sample.json,
+      docs/inference_demo_report.md (score distribution, segment breakdown,
+      5 SHAP explanations with English sentences)
+      tests/unit/test_serve_demo.py — 3 tests
+- [x] Tests: 145 passing, 0 failing
 
 ---
 
