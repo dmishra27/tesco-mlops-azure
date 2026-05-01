@@ -1,3 +1,7 @@
+# Production target: Python 3.11
+# Local dev (Python 3.14): install with --prefer-binary
+# All packages have pre-built wheels for Python 3.11
+
 # Bug fix #8: replaced flask==2.2.2 and gunicorn with fastapi, uvicorn[standard], and httpx
 
 # API framework (replaces Flask)

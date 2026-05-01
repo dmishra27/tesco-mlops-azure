@@ -13,9 +13,21 @@
 
 ## Quick Start — Fresh Clone
 
+**Requirements:**
+- Python 3.11 (production target) or 3.14 (local dev)
+- Git
+- 500 MB disk space for synthetic data
+
+**Prerequisites:** Python 3.11 recommended.
+On Python 3.14, use `--prefer-binary` flag.
+
 **Step 1: Install dependencies**
 ```bash
+# Python 3.11 (recommended — matches production):
 pip install -r ml/requirements.txt
+
+# Python 3.14 (local Windows workaround):
+pip install -r ml/requirements.txt --prefer-binary
 ```
 
 **Step 2: Generate synthetic data and train models**
