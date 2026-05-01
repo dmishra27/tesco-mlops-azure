@@ -1,4 +1,4 @@
-Last updated: 01 May 2026 (Session 6 — inference demo)
+Last updated: 01 May 2026 (Session 6 — inference demo + drift simulation)
 
 ## Session 1 — 23 April 2026 (completed)
 
@@ -325,6 +325,19 @@ infrastructure or real data access.
       5 SHAP explanations with English sentences)
       tests/unit/test_serve_demo.py — 3 tests
 - [x] Tests: 145 passing, 0 failing
+- [x] Feature drift simulation complete (35430ec)
+      drift_simulation.py — 4-phase simulation:
+        Phase 1: baseline LR on stable features (AUC 0.9345)
+        Phase 2: stale model on drifted data (AUC 0.4728, degraded)
+        Phase 3: retrained model on drifted data (AUC 0.6867, recovered)
+        Phase 4: recovery metrics (degradation 0.46, recovery 0.21)
+      PSI detection verified: recency_days, frequency, online_ratio all >0.20
+      models/drift_sim/model_week0.pkl + model_week4.pkl committed
+      docs/drift_simulation_report.md committed
+      plot_drift_simulation() added to visualise.py (function 15)
+      docs/plots/drift_simulation.png committed
+      tests/unit/test_drift_simulation.py — 5 tests
+- [x] Tests: 150 passing, 0 failing
 
 ---
 
