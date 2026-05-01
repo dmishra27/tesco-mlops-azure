@@ -11,6 +11,43 @@
 
 ---
 
+## Quick Start — Fresh Clone
+
+**Step 1: Install dependencies**
+```bash
+pip install -r ml/requirements.txt
+```
+
+**Step 2: Generate synthetic data and train models**
+```bash
+python -m ml.local.generate
+python -m ml.local.run_pipeline
+```
+*(takes approx 3–5 minutes)*
+
+**Step 3: Run all 150 tests**
+```bash
+python -m pytest tests/ -q
+```
+Expected output: `150 passed`
+
+**Step 4: Run inference demo**
+```bash
+python -m ml.local.serve_demo
+```
+Results saved to `models/inference_demo/`
+
+**Step 5: Run drift simulation**
+```bash
+python -m ml.local.drift_simulation
+```
+Results saved to `models/drift_sim/`
+
+> **Note:** `data/` is gitignored by design — synthetic data is generated on demand.
+> Model pkl files (`models/propensity_final.pkl`, `models/drift_sim/`) are committed for reproducibility.
+
+---
+
 ## Architecture
 
 ```mermaid
