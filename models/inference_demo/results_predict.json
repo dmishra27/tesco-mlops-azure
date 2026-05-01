@@ -1,0 +1,1129 @@
+{
+  "scored_at": "2026-05-01T09:45:52.305543+00:00",
+  "n_customers": 200,
+  "model_name": "tesco-customer-segmentation",
+  "model_stage": "Production",
+  "predictions": [
+    {
+      "customer_id": "CUST-00001",
+      "segment_id": 0,
+      "propensity_score": 0.000508
+    },
+    {
+      "customer_id": "CUST-00002",
+      "segment_id": 2,
+      "propensity_score": 0.000616
+    },
+    {
+      "customer_id": "CUST-00003",
+      "segment_id": 2,
+      "propensity_score": 0.00033
+    },
+    {
+      "customer_id": "CUST-00004",
+      "segment_id": 0,
+      "propensity_score": 0.00035
+    },
+    {
+      "customer_id": "CUST-00005",
+      "segment_id": 0,
+      "propensity_score": 0.000777
+    },
+    {
+      "customer_id": "CUST-00006",
+      "segment_id": 0,
+      "propensity_score": 0.000483
+    },
+    {
+      "customer_id": "CUST-00007",
+      "segment_id": 0,
+      "propensity_score": 0.000382
+    },
+    {
+      "customer_id": "CUST-00008",
+      "segment_id": 0,
+      "propensity_score": 0.000322
+    },
+    {
+      "customer_id": "CUST-00009",
+      "segment_id": 0,
+      "propensity_score": 0.000499
+    },
+    {
+      "customer_id": "CUST-00010",
+      "segment_id": 2,
+      "propensity_score": 0.000883
+    },
+    {
+      "customer_id": "CUST-00011",
+      "segment_id": 2,
+      "propensity_score": 0.000389
+    },
+    {
+      "customer_id": "CUST-00012",
+      "segment_id": 2,
+      "propensity_score": 0.000822
+    },
+    {
+      "customer_id": "CUST-00013",
+      "segment_id": 0,
+      "propensity_score": 0.000391
+    },
+    {
+      "customer_id": "CUST-00014",
+      "segment_id": 2,
+      "propensity_score": 0.000523
+    },
+    {
+      "customer_id": "CUST-00015",
+      "segment_id": 0,
+      "propensity_score": 0.000356
+    },
+    {
+      "customer_id": "CUST-00016",
+      "segment_id": 0,
+      "propensity_score": 0.000426
+    },
+    {
+      "customer_id": "CUST-00017",
+      "segment_id": 0,
+      "propensity_score": 0.00036
+    },
+    {
+      "customer_id": "CUST-00018",
+      "segment_id": 2,
+      "propensity_score": 0.000489
+    },
+    {
+      "customer_id": "CUST-00019",
+      "segment_id": 0,
+      "propensity_score": 0.000458
+    },
+    {
+      "customer_id": "CUST-00020",
+      "segment_id": 0,
+      "propensity_score": 0.000662
+    },
+    {
+      "customer_id": "CUST-00021",
+      "segment_id": 2,
+      "propensity_score": 0.000663
+    },
+    {
+      "customer_id": "CUST-00022",
+      "segment_id": 2,
+      "propensity_score": 0.000456
+    },
+    {
+      "customer_id": "CUST-00023",
+      "segment_id": 0,
+      "propensity_score": 0.000324
+    },
+    {
+      "customer_id": "CUST-00024",
+      "segment_id": 2,
+      "propensity_score": 0.000693
+    },
+    {
+      "customer_id": "CUST-00025",
+      "segment_id": 0,
+      "propensity_score": 0.000356
+    },
+    {
+      "customer_id": "CUST-00026",
+      "segment_id": 0,
+      "propensity_score": 0.000415
+    },
+    {
+      "customer_id": "CUST-00027",
+      "segment_id": 2,
+      "propensity_score": 0.000714
+    },
+    {
+      "customer_id": "CUST-00028",
+      "segment_id": 2,
+      "propensity_score": 0.000685
+    },
+    {
+      "customer_id": "CUST-00029",
+      "segment_id": 0,
+      "propensity_score": 0.000472
+    },
+    {
+      "customer_id": "CUST-00030",
+      "segment_id": 2,
+      "propensity_score": 0.000359
+    },
+    {
+      "customer_id": "CUST-00031",
+      "segment_id": 0,
+      "propensity_score": 0.000335
+    },
+    {
+      "customer_id": "CUST-00032",
+      "segment_id": 0,
+      "propensity_score": 0.000873
+    },
+    {
+      "customer_id": "CUST-00033",
+      "segment_id": 2,
+      "propensity_score": 0.000702
+    },
+    {
+      "customer_id": "CUST-00034",
+      "segment_id": 0,
+      "propensity_score": 0.000375
+    },
+    {
+      "customer_id": "CUST-00035",
+      "segment_id": 2,
+      "propensity_score": 0.000658
+    },
+    {
+      "customer_id": "CUST-00036",
+      "segment_id": 0,
+      "propensity_score": 0.000774
+    },
+    {
+      "customer_id": "CUST-00037",
+      "segment_id": 0,
+      "propensity_score": 0.000917
+    },
+    {
+      "customer_id": "CUST-00038",
+      "segment_id": 2,
+      "propensity_score": 0.000542
+    },
+    {
+      "customer_id": "CUST-00039",
+      "segment_id": 0,
+      "propensity_score": 0.000509
+    },
+    {
+      "customer_id": "CUST-00040",
+      "segment_id": 0,
+      "propensity_score": 0.000536
+    },
+    {
+      "customer_id": "CUST-00041",
+      "segment_id": 2,
+      "propensity_score": 0.000423
+    },
+    {
+      "customer_id": "CUST-00042",
+      "segment_id": 2,
+      "propensity_score": 0.000497
+    },
+    {
+      "customer_id": "CUST-00043",
+      "segment_id": 2,
+      "propensity_score": 0.000559
+    },
+    {
+      "customer_id": "CUST-00044",
+      "segment_id": 2,
+      "propensity_score": 0.000681
+    },
+    {
+      "customer_id": "CUST-00045",
+      "segment_id": 2,
+      "propensity_score": 0.000511
+    },
+    {
+      "customer_id": "CUST-00046",
+      "segment_id": 0,
+      "propensity_score": 0.000812
+    },
+    {
+      "customer_id": "CUST-00047",
+      "segment_id": 2,
+      "propensity_score": 0.00036
+    },
+    {
+      "customer_id": "CUST-00048",
+      "segment_id": 0,
+      "propensity_score": 0.000604
+    },
+    {
+      "customer_id": "CUST-00049",
+      "segment_id": 2,
+      "propensity_score": 0.000574
+    },
+    {
+      "customer_id": "CUST-00050",
+      "segment_id": 2,
+      "propensity_score": 0.000644
+    },
+    {
+      "customer_id": "CUST-00051",
+      "segment_id": 0,
+      "propensity_score": 0.000616
+    },
+    {
+      "customer_id": "CUST-00052",
+      "segment_id": 0,
+      "propensity_score": 0.000831
+    },
+    {
+      "customer_id": "CUST-00053",
+      "segment_id": 0,
+      "propensity_score": 0.000571
+    },
+    {
+      "customer_id": "CUST-00054",
+      "segment_id": 0,
+      "propensity_score": 0.00039
+    },
+    {
+      "customer_id": "CUST-00055",
+      "segment_id": 2,
+      "propensity_score": 0.000702
+    },
+    {
+      "customer_id": "CUST-00056",
+      "segment_id": 2,
+      "propensity_score": 0.00058
+    },
+    {
+      "customer_id": "CUST-00057",
+      "segment_id": 2,
+      "propensity_score": 0.000533
+    },
+    {
+      "customer_id": "CUST-00058",
+      "segment_id": 2,
+      "propensity_score": 0.000348
+    },
+    {
+      "customer_id": "CUST-00059",
+      "segment_id": 0,
+      "propensity_score": 0.000292
+    },
+    {
+      "customer_id": "CUST-00060",
+      "segment_id": 2,
+      "propensity_score": 0.000534
+    },
+    {
+      "customer_id": "CUST-00061",
+      "segment_id": 0,
+      "propensity_score": 0.000329
+    },
+    {
+      "customer_id": "CUST-00062",
+      "segment_id": 2,
+      "propensity_score": 0.000441
+    },
+    {
+      "customer_id": "CUST-00063",
+      "segment_id": 2,
+      "propensity_score": 0.00034
+    },
+    {
+      "customer_id": "CUST-00064",
+      "segment_id": 2,
+      "propensity_score": 0.000467
+    },
+    {
+      "customer_id": "CUST-00065",
+      "segment_id": 2,
+      "propensity_score": 0.000411
+    },
+    {
+      "customer_id": "CUST-00066",
+      "segment_id": 2,
+      "propensity_score": 0.000679
+    },
+    {
+      "customer_id": "CUST-00067",
+      "segment_id": 0,
+      "propensity_score": 0.000347
+    },
+    {
+      "customer_id": "CUST-00068",
+      "segment_id": 0,
+      "propensity_score": 0.000487
+    },
+    {
+      "customer_id": "CUST-00069",
+      "segment_id": 2,
+      "propensity_score": 0.000409
+    },
+    {
+      "customer_id": "CUST-00070",
+      "segment_id": 0,
+      "propensity_score": 0.000479
+    },
+    {
+      "customer_id": "CUST-00071",
+      "segment_id": 0,
+      "propensity_score": 0.0004
+    },
+    {
+      "customer_id": "CUST-00072",
+      "segment_id": 0,
+      "propensity_score": 0.000383
+    },
+    {
+      "customer_id": "CUST-00073",
+      "segment_id": 0,
+      "propensity_score": 0.000578
+    },
+    {
+      "customer_id": "CUST-00074",
+      "segment_id": 0,
+      "propensity_score": 0.000385
+    },
+    {
+      "customer_id": "CUST-00075",
+      "segment_id": 0,
+      "propensity_score": 0.000792
+    },
+    {
+      "customer_id": "CUST-00076",
+      "segment_id": 0,
+      "propensity_score": 0.000387
+    },
+    {
+      "customer_id": "CUST-00077",
+      "segment_id": 2,
+      "propensity_score": 0.000508
+    },
+    {
+      "customer_id": "CUST-00078",
+      "segment_id": 0,
+      "propensity_score": 0.000305
+    },
+    {
+      "customer_id": "CUST-00079",
+      "segment_id": 0,
+      "propensity_score": 0.000358
+    },
+    {
+      "customer_id": "CUST-00080",
+      "segment_id": 0,
+      "propensity_score": 0.000356
+    },
+    {
+      "customer_id": "CUST-00081",
+      "segment_id": 2,
+      "propensity_score": 0.000515
+    },
+    {
+      "customer_id": "CUST-00082",
+      "segment_id": 0,
+      "propensity_score": 0.000316
+    },
+    {
+      "customer_id": "CUST-00083",
+      "segment_id": 0,
+      "propensity_score": 0.000663
+    },
+    {
+      "customer_id": "CUST-00084",
+      "segment_id": 2,
+      "propensity_score": 0.000499
+    },
+    {
+      "customer_id": "CUST-00085",
+      "segment_id": 0,
+      "propensity_score": 0.000643
+    },
+    {
+      "customer_id": "CUST-00086",
+      "segment_id": 2,
+      "propensity_score": 0.00077
+    },
+    {
+      "customer_id": "CUST-00087",
+      "segment_id": 0,
+      "propensity_score": 0.000372
+    },
+    {
+      "customer_id": "CUST-00088",
+      "segment_id": 0,
+      "propensity_score": 0.000727
+    },
+    {
+      "customer_id": "CUST-00089",
+      "segment_id": 0,
+      "propensity_score": 0.000369
+    },
+    {
+      "customer_id": "CUST-00090",
+      "segment_id": 0,
+      "propensity_score": 0.000425
+    },
+    {
+      "customer_id": "CUST-00091",
+      "segment_id": 0,
+      "propensity_score": 0.000508
+    },
+    {
+      "customer_id": "CUST-00092",
+      "segment_id": 0,
+      "propensity_score": 0.000461
+    },
+    {
+      "customer_id": "CUST-00093",
+      "segment_id": 0,
+      "propensity_score": 0.000437
+    },
+    {
+      "customer_id": "CUST-00094",
+      "segment_id": 2,
+      "propensity_score": 0.000503
+    },
+    {
+      "customer_id": "CUST-00095",
+      "segment_id": 2,
+      "propensity_score": 0.000682
+    },
+    {
+      "customer_id": "CUST-00096",
+      "segment_id": 0,
+      "propensity_score": 0.000395
+    },
+    {
+      "customer_id": "CUST-00097",
+      "segment_id": 0,
+      "propensity_score": 0.000458
+    },
+    {
+      "customer_id": "CUST-00098",
+      "segment_id": 0,
+      "propensity_score": 0.000502
+    },
+    {
+      "customer_id": "CUST-00099",
+      "segment_id": 0,
+      "propensity_score": 0.000437
+    },
+    {
+      "customer_id": "CUST-00100",
+      "segment_id": 2,
+      "propensity_score": 0.000524
+    },
+    {
+      "customer_id": "CUST-00101",
+      "segment_id": 2,
+      "propensity_score": 0.000744
+    },
+    {
+      "customer_id": "CUST-00102",
+      "segment_id": 0,
+      "propensity_score": 0.000513
+    },
+    {
+      "customer_id": "CUST-00103",
+      "segment_id": 0,
+      "propensity_score": 0.000366
+    },
+    {
+      "customer_id": "CUST-00104",
+      "segment_id": 0,
+      "propensity_score": 0.000645
+    },
+    {
+      "customer_id": "CUST-00105",
+      "segment_id": 2,
+      "propensity_score": 0.000847
+    },
+    {
+      "customer_id": "CUST-00106",
+      "segment_id": 2,
+      "propensity_score": 0.000581
+    },
+    {
+      "customer_id": "CUST-00107",
+      "segment_id": 0,
+      "propensity_score": 0.0004
+    },
+    {
+      "customer_id": "CUST-00108",
+      "segment_id": 0,
+      "propensity_score": 0.00086
+    },
+    {
+      "customer_id": "CUST-00109",
+      "segment_id": 0,
+      "propensity_score": 0.000391
+    },
+    {
+      "customer_id": "CUST-00110",
+      "segment_id": 2,
+      "propensity_score": 0.000547
+    },
+    {
+      "customer_id": "CUST-00111",
+      "segment_id": 2,
+      "propensity_score": 0.000523
+    },
+    {
+      "customer_id": "CUST-00112",
+      "segment_id": 0,
+      "propensity_score": 0.000467
+    },
+    {
+      "customer_id": "CUST-00113",
+      "segment_id": 2,
+      "propensity_score": 0.000848
+    },
+    {
+      "customer_id": "CUST-00114",
+      "segment_id": 2,
+      "propensity_score": 0.000827
+    },
+    {
+      "customer_id": "CUST-00115",
+      "segment_id": 0,
+      "propensity_score": 0.000398
+    },
+    {
+      "customer_id": "CUST-00116",
+      "segment_id": 0,
+      "propensity_score": 0.000506
+    },
+    {
+      "customer_id": "CUST-00117",
+      "segment_id": 0,
+      "propensity_score": 0.000861
+    },
+    {
+      "customer_id": "CUST-00118",
+      "segment_id": 0,
+      "propensity_score": 0.000348
+    },
+    {
+      "customer_id": "CUST-00119",
+      "segment_id": 0,
+      "propensity_score": 0.000305
+    },
+    {
+      "customer_id": "CUST-00120",
+      "segment_id": 0,
+      "propensity_score": 0.000567
+    },
+    {
+      "customer_id": "CUST-00121",
+      "segment_id": 2,
+      "propensity_score": 0.000729
+    },
+    {
+      "customer_id": "CUST-00122",
+      "segment_id": 2,
+      "propensity_score": 0.000468
+    },
+    {
+      "customer_id": "CUST-00123",
+      "segment_id": 2,
+      "propensity_score": 0.000648
+    },
+    {
+      "customer_id": "CUST-00124",
+      "segment_id": 0,
+      "propensity_score": 0.000381
+    },
+    {
+      "customer_id": "CUST-00125",
+      "segment_id": 0,
+      "propensity_score": 0.000374
+    },
+    {
+      "customer_id": "CUST-00126",
+      "segment_id": 2,
+      "propensity_score": 0.000556
+    },
+    {
+      "customer_id": "CUST-00127",
+      "segment_id": 0,
+      "propensity_score": 0.000399
+    },
+    {
+      "customer_id": "CUST-00128",
+      "segment_id": 2,
+      "propensity_score": 0.000559
+    },
+    {
+      "customer_id": "CUST-00129",
+      "segment_id": 2,
+      "propensity_score": 0.000549
+    },
+    {
+      "customer_id": "CUST-00130",
+      "segment_id": 0,
+      "propensity_score": 0.000793
+    },
+    {
+      "customer_id": "CUST-00131",
+      "segment_id": 0,
+      "propensity_score": 0.000398
+    },
+    {
+      "customer_id": "CUST-00132",
+      "segment_id": 2,
+      "propensity_score": 0.00037
+    },
+    {
+      "customer_id": "CUST-00133",
+      "segment_id": 2,
+      "propensity_score": 0.000736
+    },
+    {
+      "customer_id": "CUST-00134",
+      "segment_id": 0,
+      "propensity_score": 0.000387
+    },
+    {
+      "customer_id": "CUST-00135",
+      "segment_id": 2,
+      "propensity_score": 0.000648
+    },
+    {
+      "customer_id": "CUST-00136",
+      "segment_id": 0,
+      "propensity_score": 0.000363
+    },
+    {
+      "customer_id": "CUST-00137",
+      "segment_id": 0,
+      "propensity_score": 0.000578
+    },
+    {
+      "customer_id": "CUST-00138",
+      "segment_id": 2,
+      "propensity_score": 0.000679
+    },
+    {
+      "customer_id": "CUST-00139",
+      "segment_id": 2,
+      "propensity_score": 0.000687
+    },
+    {
+      "customer_id": "CUST-00140",
+      "segment_id": 0,
+      "propensity_score": 0.000501
+    },
+    {
+      "customer_id": "CUST-00141",
+      "segment_id": 2,
+      "propensity_score": 0.000758
+    },
+    {
+      "customer_id": "CUST-00142",
+      "segment_id": 0,
+      "propensity_score": 0.000802
+    },
+    {
+      "customer_id": "CUST-00143",
+      "segment_id": 2,
+      "propensity_score": 0.000748
+    },
+    {
+      "customer_id": "CUST-00144",
+      "segment_id": 0,
+      "propensity_score": 0.000336
+    },
+    {
+      "customer_id": "CUST-00145",
+      "segment_id": 2,
+      "propensity_score": 0.00063
+    },
+    {
+      "customer_id": "CUST-00146",
+      "segment_id": 0,
+      "propensity_score": 0.000375
+    },
+    {
+      "customer_id": "CUST-00147",
+      "segment_id": 0,
+      "propensity_score": 0.000591
+    },
+    {
+      "customer_id": "CUST-00148",
+      "segment_id": 2,
+      "propensity_score": 0.000586
+    },
+    {
+      "customer_id": "CUST-00149",
+      "segment_id": 2,
+      "propensity_score": 0.00071
+    },
+    {
+      "customer_id": "CUST-00150",
+      "segment_id": 2,
+      "propensity_score": 0.000474
+    },
+    {
+      "customer_id": "CUST-00151",
+      "segment_id": 0,
+      "propensity_score": 0.000444
+    },
+    {
+      "customer_id": "CUST-00152",
+      "segment_id": 0,
+      "propensity_score": 0.000526
+    },
+    {
+      "customer_id": "CUST-00153",
+      "segment_id": 0,
+      "propensity_score": 0.000396
+    },
+    {
+      "customer_id": "CUST-00154",
+      "segment_id": 0,
+      "propensity_score": 0.000423
+    },
+    {
+      "customer_id": "CUST-00155",
+      "segment_id": 2,
+      "propensity_score": 0.000352
+    },
+    {
+      "customer_id": "CUST-00156",
+      "segment_id": 2,
+      "propensity_score": 0.000554
+    },
+    {
+      "customer_id": "CUST-00157",
+      "segment_id": 0,
+      "propensity_score": 0.00064
+    },
+    {
+      "customer_id": "CUST-00158",
+      "segment_id": 0,
+      "propensity_score": 0.000324
+    },
+    {
+      "customer_id": "CUST-00159",
+      "segment_id": 0,
+      "propensity_score": 0.000499
+    },
+    {
+      "customer_id": "CUST-00160",
+      "segment_id": 2,
+      "propensity_score": 0.000609
+    },
+    {
+      "customer_id": "CUST-00161",
+      "segment_id": 0,
+      "propensity_score": 0.000447
+    },
+    {
+      "customer_id": "CUST-00162",
+      "segment_id": 0,
+      "propensity_score": 0.000328
+    },
+    {
+      "customer_id": "CUST-00163",
+      "segment_id": 0,
+      "propensity_score": 0.00036
+    },
+    {
+      "customer_id": "CUST-00164",
+      "segment_id": 2,
+      "propensity_score": 0.00043
+    },
+    {
+      "customer_id": "CUST-00165",
+      "segment_id": 2,
+      "propensity_score": 0.000374
+    },
+    {
+      "customer_id": "CUST-00166",
+      "segment_id": 0,
+      "propensity_score": 0.000377
+    },
+    {
+      "customer_id": "CUST-00167",
+      "segment_id": 0,
+      "propensity_score": 0.000527
+    },
+    {
+      "customer_id": "CUST-00168",
+      "segment_id": 0,
+      "propensity_score": 0.000543
+    },
+    {
+      "customer_id": "CUST-00169",
+      "segment_id": 2,
+      "propensity_score": 0.000551
+    },
+    {
+      "customer_id": "CUST-00170",
+      "segment_id": 0,
+      "propensity_score": 0.000434
+    },
+    {
+      "customer_id": "CUST-00171",
+      "segment_id": 0,
+      "propensity_score": 0.000325
+    },
+    {
+      "customer_id": "CUST-00172",
+      "segment_id": 2,
+      "propensity_score": 0.000849
+    },
+    {
+      "customer_id": "CUST-00173",
+      "segment_id": 0,
+      "propensity_score": 0.000409
+    },
+    {
+      "customer_id": "CUST-00174",
+      "segment_id": 0,
+      "propensity_score": 0.000319
+    },
+    {
+      "customer_id": "CUST-00175",
+      "segment_id": 2,
+      "propensity_score": 0.000682
+    },
+    {
+      "customer_id": "CUST-00176",
+      "segment_id": 0,
+      "propensity_score": 0.000445
+    },
+    {
+      "customer_id": "CUST-00177",
+      "segment_id": 2,
+      "propensity_score": 0.000395
+    },
+    {
+      "customer_id": "CUST-00178",
+      "segment_id": 0,
+      "propensity_score": 0.000804
+    },
+    {
+      "customer_id": "CUST-00179",
+      "segment_id": 0,
+      "propensity_score": 0.000307
+    },
+    {
+      "customer_id": "CUST-00180",
+      "segment_id": 0,
+      "propensity_score": 0.00033
+    },
+    {
+      "customer_id": "CUST-00181",
+      "segment_id": 0,
+      "propensity_score": 0.000365
+    },
+    {
+      "customer_id": "CUST-00182",
+      "segment_id": 2,
+      "propensity_score": 0.000792
+    },
+    {
+      "customer_id": "CUST-00183",
+      "segment_id": 2,
+      "propensity_score": 0.000751
+    },
+    {
+      "customer_id": "CUST-00184",
+      "segment_id": 2,
+      "propensity_score": 0.000675
+    },
+    {
+      "customer_id": "CUST-00185",
+      "segment_id": 0,
+      "propensity_score": 0.00048
+    },
+    {
+      "customer_id": "CUST-00186",
+      "segment_id": 0,
+      "propensity_score": 0.00033
+    },
+    {
+      "customer_id": "CUST-00187",
+      "segment_id": 2,
+      "propensity_score": 0.000791
+    },
+    {
+      "customer_id": "CUST-00188",
+      "segment_id": 2,
+      "propensity_score": 0.000798
+    },
+    {
+      "customer_id": "CUST-00189",
+      "segment_id": 2,
+      "propensity_score": 0.000645
+    },
+    {
+      "customer_id": "CUST-00190",
+      "segment_id": 0,
+      "propensity_score": 0.000743
+    },
+    {
+      "customer_id": "CUST-00191",
+      "segment_id": 2,
+      "propensity_score": 0.000431
+    },
+    {
+      "customer_id": "CUST-00192",
+      "segment_id": 2,
+      "propensity_score": 0.000515
+    },
+    {
+      "customer_id": "CUST-00193",
+      "segment_id": 2,
+      "propensity_score": 0.000698
+    },
+    {
+      "customer_id": "CUST-00194",
+      "segment_id": 0,
+      "propensity_score": 0.000512
+    },
+    {
+      "customer_id": "CUST-00195",
+      "segment_id": 0,
+      "propensity_score": 0.000553
+    },
+    {
+      "customer_id": "CUST-00196",
+      "segment_id": 0,
+      "propensity_score": 0.000353
+    },
+    {
+      "customer_id": "CUST-00197",
+      "segment_id": 2,
+      "propensity_score": 0.000385
+    },
+    {
+      "customer_id": "CUST-00198",
+      "segment_id": 2,
+      "propensity_score": 0.000363
+    },
+    {
+      "customer_id": "CUST-00199",
+      "segment_id": 0,
+      "propensity_score": 0.000323
+    },
+    {
+      "customer_id": "CUST-00200",
+      "segment_id": 0,
+      "propensity_score": 0.000394
+    }
+  ],
+  "score_distribution": {
+    "mean": 0.000524,
+    "std": 0.000159,
+    "min": 0.000292,
+    "p10": 0.000348,
+    "p25": 0.000386,
+    "p50": 0.0005,
+    "p75": 0.000646,
+    "p90": 0.000774,
+    "p95": 0.000822,
+    "p99": 0.000873,
+    "max": 0.000917
+  },
+  "segment_distribution": {
+    "0": 114,
+    "2": 86
+  },
+  "top_10_customers": [
+    {
+      "customer_id": "CUST-00037",
+      "segment_id": 0,
+      "propensity_score": 0.000917
+    },
+    {
+      "customer_id": "CUST-00010",
+      "segment_id": 2,
+      "propensity_score": 0.000883
+    },
+    {
+      "customer_id": "CUST-00032",
+      "segment_id": 0,
+      "propensity_score": 0.000873
+    },
+    {
+      "customer_id": "CUST-00117",
+      "segment_id": 0,
+      "propensity_score": 0.000861
+    },
+    {
+      "customer_id": "CUST-00108",
+      "segment_id": 0,
+      "propensity_score": 0.00086
+    },
+    {
+      "customer_id": "CUST-00172",
+      "segment_id": 2,
+      "propensity_score": 0.000849
+    },
+    {
+      "customer_id": "CUST-00113",
+      "segment_id": 2,
+      "propensity_score": 0.000848
+    },
+    {
+      "customer_id": "CUST-00105",
+      "segment_id": 2,
+      "propensity_score": 0.000847
+    },
+    {
+      "customer_id": "CUST-00052",
+      "segment_id": 0,
+      "propensity_score": 0.000831
+    },
+    {
+      "customer_id": "CUST-00114",
+      "segment_id": 2,
+      "propensity_score": 0.000827
+    }
+  ],
+  "bottom_10_customers": [
+    {
+      "customer_id": "CUST-00059",
+      "segment_id": 0,
+      "propensity_score": 0.000292
+    },
+    {
+      "customer_id": "CUST-00078",
+      "segment_id": 0,
+      "propensity_score": 0.000305
+    },
+    {
+      "customer_id": "CUST-00119",
+      "segment_id": 0,
+      "propensity_score": 0.000305
+    },
+    {
+      "customer_id": "CUST-00179",
+      "segment_id": 0,
+      "propensity_score": 0.000307
+    },
+    {
+      "customer_id": "CUST-00082",
+      "segment_id": 0,
+      "propensity_score": 0.000316
+    },
+    {
+      "customer_id": "CUST-00174",
+      "segment_id": 0,
+      "propensity_score": 0.000319
+    },
+    {
+      "customer_id": "CUST-00008",
+      "segment_id": 0,
+      "propensity_score": 0.000322
+    },
+    {
+      "customer_id": "CUST-00199",
+      "segment_id": 0,
+      "propensity_score": 0.000323
+    },
+    {
+      "customer_id": "CUST-00023",
+      "segment_id": 0,
+      "propensity_score": 0.000324
+    },
+    {
+      "customer_id": "CUST-00158",
+      "segment_id": 0,
+      "propensity_score": 0.000324
+    }
+  ]
+}

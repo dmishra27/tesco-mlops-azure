@@ -1,0 +1,282 @@
+[
+  {
+    "customer_id": "CUST-00010",
+    "propensity_score": 0.000883,
+    "segment_id": 2,
+    "explanation": "This customer received a propensity score of 0.00 primarily because their total spend (\u00a3326.81) is above average and they shopped recently (0 days ago).",
+    "top_features": [
+      {
+        "feature": "monetary",
+        "impact": 0.0071,
+        "direction": "positive"
+      },
+      {
+        "feature": "recency_days",
+        "impact": 0.0,
+        "direction": "negative"
+      },
+      {
+        "feature": "frequency",
+        "impact": 0.0,
+        "direction": "positive"
+      },
+      {
+        "feature": "avg_basket_size",
+        "impact": 0.0,
+        "direction": "positive"
+      },
+      {
+        "feature": "basket_std",
+        "impact": 0.0,
+        "direction": "positive"
+      },
+      {
+        "feature": "online_ratio",
+        "impact": 0.0,
+        "direction": "negative"
+      },
+      {
+        "feature": "online_txns",
+        "impact": 0.0,
+        "direction": "negative"
+      },
+      {
+        "feature": "instore_txns",
+        "impact": 0.0,
+        "direction": "negative"
+      },
+      {
+        "feature": "active_days",
+        "impact": 0.0,
+        "direction": "positive"
+      }
+    ],
+    "model_name": "tesco-customer-segmentation",
+    "model_stage": "Production",
+    "scored_at": "2026-05-01T09:45:52.314094+00:00"
+  },
+  {
+    "customer_id": "CUST-00032",
+    "propensity_score": 0.000873,
+    "segment_id": 0,
+    "explanation": "This customer received a propensity score of 0.00 primarily because their total spend (\u00a3330.85) is above average and their last purchase was 1 days ago, above the average.",
+    "top_features": [
+      {
+        "feature": "monetary",
+        "impact": 0.0086,
+        "direction": "positive"
+      },
+      {
+        "feature": "recency_days",
+        "impact": 0.0,
+        "direction": "positive"
+      },
+      {
+        "feature": "frequency",
+        "impact": 0.0,
+        "direction": "positive"
+      },
+      {
+        "feature": "avg_basket_size",
+        "impact": 0.0,
+        "direction": "positive"
+      },
+      {
+        "feature": "basket_std",
+        "impact": 0.0,
+        "direction": "positive"
+      },
+      {
+        "feature": "online_ratio",
+        "impact": 0.0,
+        "direction": "negative"
+      },
+      {
+        "feature": "online_txns",
+        "impact": 0.0,
+        "direction": "negative"
+      },
+      {
+        "feature": "instore_txns",
+        "impact": 0.0,
+        "direction": "negative"
+      },
+      {
+        "feature": "active_days",
+        "impact": 0.0,
+        "direction": "positive"
+      }
+    ],
+    "model_name": "tesco-customer-segmentation",
+    "model_stage": "Production",
+    "scored_at": "2026-05-01T09:45:52.319713+00:00"
+  },
+  {
+    "customer_id": "CUST-00037",
+    "propensity_score": 0.000917,
+    "segment_id": 0,
+    "explanation": "This customer received a propensity score of 0.00 primarily because their total spend (\u00a3314.92) is above average and they shopped recently (0 days ago).",
+    "top_features": [
+      {
+        "feature": "monetary",
+        "impact": 0.0086,
+        "direction": "positive"
+      },
+      {
+        "feature": "recency_days",
+        "impact": 0.0,
+        "direction": "negative"
+      },
+      {
+        "feature": "frequency",
+        "impact": 0.0,
+        "direction": "positive"
+      },
+      {
+        "feature": "avg_basket_size",
+        "impact": 0.0,
+        "direction": "positive"
+      },
+      {
+        "feature": "basket_std",
+        "impact": 0.0,
+        "direction": "positive"
+      },
+      {
+        "feature": "online_ratio",
+        "impact": 0.0,
+        "direction": "negative"
+      },
+      {
+        "feature": "online_txns",
+        "impact": 0.0,
+        "direction": "negative"
+      },
+      {
+        "feature": "instore_txns",
+        "impact": 0.0,
+        "direction": "negative"
+      },
+      {
+        "feature": "active_days",
+        "impact": 0.0,
+        "direction": "positive"
+      }
+    ],
+    "model_name": "tesco-customer-segmentation",
+    "model_stage": "Production",
+    "scored_at": "2026-05-01T09:45:52.325074+00:00"
+  },
+  {
+    "customer_id": "CUST-00108",
+    "propensity_score": 0.00086,
+    "segment_id": 0,
+    "explanation": "This customer received a propensity score of 0.00 primarily because their total spend (\u00a3335.93) is above average and their last purchase was 1 days ago, above the average.",
+    "top_features": [
+      {
+        "feature": "monetary",
+        "impact": 0.0086,
+        "direction": "positive"
+      },
+      {
+        "feature": "recency_days",
+        "impact": 0.0,
+        "direction": "positive"
+      },
+      {
+        "feature": "frequency",
+        "impact": 0.0,
+        "direction": "positive"
+      },
+      {
+        "feature": "avg_basket_size",
+        "impact": 0.0,
+        "direction": "positive"
+      },
+      {
+        "feature": "basket_std",
+        "impact": 0.0,
+        "direction": "positive"
+      },
+      {
+        "feature": "online_ratio",
+        "impact": 0.0,
+        "direction": "negative"
+      },
+      {
+        "feature": "online_txns",
+        "impact": 0.0,
+        "direction": "negative"
+      },
+      {
+        "feature": "instore_txns",
+        "impact": 0.0,
+        "direction": "negative"
+      },
+      {
+        "feature": "active_days",
+        "impact": 0.0,
+        "direction": "positive"
+      }
+    ],
+    "model_name": "tesco-customer-segmentation",
+    "model_stage": "Production",
+    "scored_at": "2026-05-01T09:45:52.330227+00:00"
+  },
+  {
+    "customer_id": "CUST-00117",
+    "propensity_score": 0.000861,
+    "segment_id": 0,
+    "explanation": "This customer received a propensity score of 0.00 primarily because their total spend (\u00a3335.53) is above average and their last purchase was 2 days ago, above the average.",
+    "top_features": [
+      {
+        "feature": "monetary",
+        "impact": 0.0084,
+        "direction": "positive"
+      },
+      {
+        "feature": "recency_days",
+        "impact": 0.0,
+        "direction": "positive"
+      },
+      {
+        "feature": "frequency",
+        "impact": 0.0,
+        "direction": "positive"
+      },
+      {
+        "feature": "avg_basket_size",
+        "impact": 0.0,
+        "direction": "positive"
+      },
+      {
+        "feature": "basket_std",
+        "impact": 0.0,
+        "direction": "positive"
+      },
+      {
+        "feature": "online_ratio",
+        "impact": 0.0,
+        "direction": "negative"
+      },
+      {
+        "feature": "online_txns",
+        "impact": 0.0,
+        "direction": "negative"
+      },
+      {
+        "feature": "instore_txns",
+        "impact": 0.0,
+        "direction": "negative"
+      },
+      {
+        "feature": "active_days",
+        "impact": 0.0,
+        "direction": "positive"
+      }
+    ],
+    "model_name": "tesco-customer-segmentation",
+    "model_stage": "Production",
+    "scored_at": "2026-05-01T09:45:52.335347+00:00"
+  }
+]
