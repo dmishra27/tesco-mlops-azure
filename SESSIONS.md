@@ -1,4 +1,4 @@
-Last updated: 01 May 2026 (Session 6 — inference demo + drift simulation)
+Last updated: 01 May 2026 (Session 5 Part 2 — complete)
 
 ## Session 1 — 23 April 2026 (completed)
 
@@ -318,6 +318,13 @@ infrastructure or real data access.
 - [x] Regenerated all 14 plots — all confirmed correct in docs/plots/
 - [x] README.md gallery verified — all 14 plots listed, 7-model references correct
 - [x] 142 tests passing, 0 failing
+
+---
+
+## Session 5 Part 2 — 01 May 2026 (complete)
+
+### Completed today
+
 - [x] FastAPI inference demo committed (d5e7373)
       serve_demo.py — 200 customers scored via /predict, top-5 via /explain,
       results_predict.json, results_explain.json, test_input_sample.json,
@@ -337,7 +344,17 @@ infrastructure or real data access.
       plot_drift_simulation() added to visualise.py (function 15)
       docs/plots/drift_simulation.png committed
       tests/unit/test_drift_simulation.py — 5 tests
-- [x] Tests: 150 passing, 0 failing
+- [x] Tests: 150 passing, 0 failing, 15 plots, 43 commits
+
+### Completion Summary
+
+- FastAPI inference demo: 200 customers scored via /predict, 5 explained via
+  /explain, results (results_predict.json, results_explain.json,
+  inference_demo_report.md) committed to GitHub
+- Drift simulation: 4-phase, AUC 0.93→0.47→0.69, PSI fired on
+  recency_days/frequency/online_ratio (all >0.20), model_week0.pkl and
+  model_week4.pkl committed to GitHub
+- 150 tests passing, 15 plots in docs/plots/, 43 commits on master
 
 ---
 
@@ -474,9 +491,9 @@ Do not start any work yet. Wait for my next message.
 - GitHub: https://github.com/dmishra27/tesco-mlops-azure
 - Stack: Azure + Databricks + MLflow + FastAPI + Airflow + Terraform + GitHub Actions
 - Python: 3.11
-- Total commits: 38
-- Total tests: 142
-- Total plots: 14
+- Total commits: 43
+- Total tests: 150
+- Total plots: 15
 - Coverage ml/local: 84% overall (feature_engineering 97%, visualise 99%)
 - Coverage ml/score: 80%
-- Sessions completed: 5 (complete — all local work done)
+- Sessions completed: 5 Part 2 (complete — all local work done)
