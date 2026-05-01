@@ -524,3 +524,114 @@ def plot_model_comparison(
     ax.grid(True, alpha=0.3, axis="x")
     plt.tight_layout()
     return _save("model_comparison.png")
+
+
+# ─── 15. Drift simulation ────────────────────────────────────────────────────
+
+def plot_drift_simulation(simulation_results: dict) -> str:
+    """
+    2-panel drift simulation chart.
+    Panel 1: AUC and Lift timeline across 3 phases with degradation/recovery zones.
+    Panel 2: PSI bar chart coloured by severity threshold.
+    """
+    os.makedirs(PLOT_DIR, exist_ok=True)
+
+    p1 = simulation_results["phase1_baseline"]
+    p2 = simulation_results["phase2_stale_model_on_drifted_data"]
+    p3 = simulation_results["phase3_retrained_model"]
+
+    phases    = ["Week 0\n(Baseline)", "Week 4\n(Stale Model)", "Week 4\n(Retrained)"]
+    auc_vals  = [p1["test_auc"], p2["test_auc"], p3["test_auc"]]
+    lift_vals = [p1["lift_d1"],  p2["lift_d1"],  p3["lift_d1"]]
+    x         = np.arange(len(phases))
+
+    psi_scores = p2.get("psi_scores", {})
+    feat_names = list(psi_scores.keys())
+    psi_vals   = [psi_scores[f] for f in feat_names]
+
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(11, 10))
+    fig.suptitle("Feature Drift Simulation — Degradation and Recovery", fontsize=13, y=0.98)
+
+    # ── Panel 1: AUC + Lift timeline ─────────────────────────────────────────
+    color_auc  = "steelblue"
+    color_lift = "darkorange"
+
+    ax1_r = ax1.twinx()
+
+    auc_line,  = ax1.plot(x, auc_vals,  "o-", color=color_auc,  linewidth=2.2,
+                          markersize=8, label="AUC (left)")
+    lift_line, = ax1_r.plot(x, lift_vals, "s--", color=color_lift, linewidth=2.2,
+                             markersize=8, label="Lift@D1 (right)")
+
+    # Degradation zone (phase 0 → 1)
+    ax1.axvspan(0, 1, alpha=0.10, color="red",   label="Degradation zone")
+    ax1.text(0.5, min(auc_vals) + 0.005, "Degradation\nzone",
+             ha="center", va="bottom", fontsize=8, color="darkred")
+
+    # Recovery zone (phase 1 → 2)
+    ax1.axvspan(1, 2, alpha=0.10, color="green", label="Recovery zone")
+    ax1.text(1.5, min(auc_vals) + 0.005, "Recovery\nzone",
+             ha="center", va="bottom", fontsize=8, color="darkgreen")
+
+    ax1.axhline(y=0.70, color="red", linestyle=":", linewidth=1.4,
+                label="AUC threshold (0.70)")
+
+    ax1.set_xticks(x)
+    ax1.set_xticklabels(phases, fontsize=10)
+    ax1.set_ylabel("Test AUC", color=color_auc)
+    ax1.tick_params(axis="y", labelcolor=color_auc)
+    ax1.set_ylim(max(0.40, min(auc_vals) - 0.10), min(1.0, max(auc_vals) + 0.10))
+    ax1.grid(True, alpha=0.3)
+
+    ax1_r.set_ylabel("Lift@D1", color=color_lift)
+    ax1_r.tick_params(axis="y", labelcolor=color_lift)
+    ax1_r.set_ylim(0, max(lift_vals) * 1.4 + 0.1)
+
+    lines  = [auc_line, lift_line,
+              plt.Line2D([0], [0], color="red",   linestyle=":", label="AUC threshold (0.70)"),
+              plt.Rectangle((0, 0), 1, 1, fc="red",   alpha=0.15, label="Degradation zone"),
+              plt.Rectangle((0, 0), 1, 1, fc="green", alpha=0.15, label="Recovery zone")]
+    ax1.legend(handles=lines, loc="upper right", fontsize=8)
+    ax1.set_title("Model Performance: Baseline → Drift → Recovery", fontsize=11)
+
+    # Annotate AUC values
+    for xi, auc_v in zip(x, auc_vals):
+        ax1.annotate(f"{auc_v:.3f}", xy=(xi, auc_v),
+                     xytext=(0, 12), textcoords="offset points",
+                     ha="center", fontsize=9, color=color_auc)
+
+    # ── Panel 2: PSI bar chart ────────────────────────────────────────────────
+    if feat_names:
+        bar_colors = []
+        for v in psi_vals:
+            if v >= 0.20:
+                bar_colors.append("tomato")
+            elif v >= 0.10:
+                bar_colors.append("darkorange")
+            else:
+                bar_colors.append("mediumseagreen")
+
+        xi2 = np.arange(len(feat_names))
+        ax2.bar(xi2, psi_vals, color=bar_colors, edgecolor="white", linewidth=0.5)
+        ax2.axhline(y=0.10, color="darkorange", linestyle="--", linewidth=1.4,
+                    label="Monitor threshold (0.10)")
+        ax2.axhline(y=0.20, color="tomato",     linestyle="--", linewidth=1.4,
+                    label="Retrain threshold (0.20)")
+        ax2.set_xticks(xi2)
+        ax2.set_xticklabels(feat_names, rotation=30, ha="right", fontsize=9)
+        ax2.set_ylabel("PSI score")
+        ax2.set_ylim(0, max(max(psi_vals) * 1.25, 0.30))
+        ax2.legend(fontsize=9)
+        ax2.grid(True, alpha=0.3, axis="y")
+        ax2.set_title(
+            f"PSI by Feature (Drift Magnitude {simulation_results.get('drift_magnitude', 0.30)})",
+            fontsize=11,
+        )
+        # Add PSI labels on bars
+        for xi_b, v in zip(xi2, psi_vals):
+            ax2.text(xi_b, v + 0.005, f"{v:.3f}", ha="center", va="bottom", fontsize=8)
+    else:
+        ax2.text(0.5, 0.5, "No PSI data", ha="center", va="center", transform=ax2.transAxes)
+
+    plt.tight_layout()
+    return _save("drift_simulation.png")

@@ -1,0 +1,58 @@
+{
+  "simulation_date": "2026-05-01T11:04:13.556045+00:00",
+  "drift_magnitude": 0.3,
+  "drift_features": [
+    "recency_days",
+    "online_ratio",
+    "frequency"
+  ],
+  "phase1_baseline": {
+    "model": "model_week0.pkl",
+    "test_auc": 0.9444,
+    "lift_d1": 3.75,
+    "psi_scores": {
+      "recency_days": 0.0701,
+      "frequency": 0.0867,
+      "monetary": 0.1869,
+      "avg_basket_size": 0.0395,
+      "basket_std": 0.0245,
+      "online_ratio": 0.0862,
+      "active_days": 0.0397,
+      "has_promoted_category": 0.0007
+    }
+  },
+  "phase2_stale_model_on_drifted_data": {
+    "model": "model_week0.pkl (stale)",
+    "test_auc": 0.2821,
+    "lift_d1": 0.0,
+    "psi_scores": {
+      "recency_days": 22.5963,
+      "frequency": 21.8538,
+      "monetary": 0.1064,
+      "avg_basket_size": 0.0544,
+      "basket_std": 0.0575,
+      "online_ratio": 13.3329,
+      "active_days": 0.0431,
+      "has_promoted_category": 0.0044
+    },
+    "overall_max_psi": 22.5963,
+    "features_above_threshold": [
+      "recency_days",
+      "frequency",
+      "online_ratio"
+    ],
+    "drift_detected": true
+  },
+  "phase3_retrained_model": {
+    "model": "model_week4.pkl",
+    "test_auc": 0.6318,
+    "lift_d1": 1.4062
+  },
+  "phase4_recovery_metrics": {
+    "auc_degradation": 0.6623,
+    "auc_recovery": 0.3497,
+    "lift_degradation": 3.75,
+    "lift_recovery": 1.4062,
+    "full_recovery_achieved": false
+  }
+}
