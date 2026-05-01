@@ -1,4 +1,4 @@
-Last updated: 01 May 2026 (Session 5 Part 2 — complete)
+Last updated: 01 May 2026 (Session 5 Part 2 complete + repo portfolio-ready)
 
 ## Session 1 — 23 April 2026 (completed)
 
@@ -358,6 +358,120 @@ infrastructure or real data access.
 
 ---
 
+## Session 5 Part 2 — Portfolio Finalisation
+## 01 May 2026 (complete)
+
+### Completed today (01 May 2026)
+
+- [x] Fresh clone test verified (Desktop/tesco-test-clone)
+      150 tests pass on completely fresh clone
+      LR selected AUC 0.7682 — deterministic ✅
+      Sequence: generate → run_pipeline → pytest
+
+- [x] Production model pkl files committed (96d3b2b)
+      models/propensity_final.pkl (203 KB)
+      models/propensity_final_calibrated.pkl (203 KB)
+      Enables API tests on fresh clone without
+      re-running full pipeline
+
+- [x] README Quick Start added (da6b99b)
+      Step 1-5 sequence documented
+      Requirements: Python 3.11 or 3.14
+      Note: data/ gitignored, generated on demand
+
+- [x] Python version prereq added (1cf4c48)
+      scikit-learn==1.5.2 has no wheel for Python 3.14
+      Fix: pip install -r ml/requirements.txt
+           --prefer-binary
+      Comment block added to ml/requirements.txt
+
+- [x] GitHub repo audit completed
+      .gitignore: data/ excluded (correct — generated)
+      models/ tracked: 8 files confirmed
+      Synthetic data: NOT in GitHub (by design)
+      gate_report.json: at data/results/ (gitignored)
+
+- [x] Complete project status document generated
+      tesco_mlops_project_status.docx
+      7 sections: exec summary, module hierarchy,
+      detailed breakdown, config files,
+      execution flow, GitHub artefacts,
+      remaining work
+
+- [x] MLOps completeness assessment done
+      MLOps = DataOps + DevOps + ModelOps
+      DataOps: 85% complete
+      DevOps:  90% complete
+      ModelOps: 95% complete
+      Gaps: Azure infra (Category A — code ready),
+      batch vs real-time feature serving (Category B),
+      synthetic vs real campaign labels (Category B)
+
+### Session 5 Part 2 — Restore Prompt for Tomorrow
+
+To restore this exact session state tomorrow, open
+Claude Code in tesco-mlops-azure and send:
+
+---
+Read SESSIONS.md and CLAUDE.md to restore
+full project context.
+
+Run: date +"%d %B %Y"
+Run: git log --oneline -3
+Run: python -m pytest tests/ -q --tb=no 2>&1 | tail -3
+
+Confirm all of the following:
+- Project: tesco-mlops-azure
+- Latest commit: 1cf4c48 (Python version prereq)
+- Tests: 150 passing, 0 failing
+- models/ tracked files: 8 (run: git ls-files models/)
+
+Show confirmation table.
+Do not start any work.
+Wait for my next instruction.
+---
+
+### Complete Project State as of 01 May 2026
+
+Git state:
+  Latest commit:  1cf4c48
+  Total commits:  47
+  Branch:         master (up to date with origin)
+
+Tests: 150 passing, 0 failing
+
+Plots: 15 PNGs in docs/plots/
+
+Model files in GitHub (8):
+  models/propensity_final.pkl
+  models/propensity_final_calibrated.pkl
+  models/drift_sim/model_week0.pkl
+  models/drift_sim/model_week4.pkl
+  models/drift_sim/simulation_results.json
+  models/inference_demo/results_predict.json
+  models/inference_demo/results_explain.json
+  models/inference_demo/test_input_sample.json
+
+Coverage:
+  ml/local:  84% overall
+             feature_engineering: 97%
+             visualise: 99%
+  ml/score:  80%
+
+Fresh clone verified:
+  git clone → generate → run_pipeline → 150 tests ✅
+  Python 3.11 recommended
+  Python 3.14 workaround: --prefer-binary flag
+
+Remaining work (requires Azure subscription):
+  P1: terraform apply (infrastructure)
+  P2: Connect real Event Hub stream
+  P3: Unity Catalog feature store
+  P4: Azure Purview data lineage
+  P5: Replace synthetic with real campaign labels
+
+---
+
 ### Session 5 Part 2 — Future Work (requires Azure access)
 
 Priority 1 — Deploy to Azure
@@ -491,9 +605,11 @@ Do not start any work yet. Wait for my next message.
 - GitHub: https://github.com/dmishra27/tesco-mlops-azure
 - Stack: Azure + Databricks + MLflow + FastAPI + Airflow + Terraform + GitHub Actions
 - Python: 3.11
-- Total commits: 43
+- Total commits: 47
 - Total tests: 150
 - Total plots: 15
+- Model files in GitHub: 8
 - Coverage ml/local: 84% overall (feature_engineering 97%, visualise 99%)
 - Coverage ml/score: 80%
-- Sessions completed: 5 Part 2 (complete — all local work done)
+- Sessions completed: 5 Part 2 (fully complete — all local work done, repo portfolio-ready)
+- Last verified: 01 May 2026 fresh clone test
